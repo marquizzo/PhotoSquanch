@@ -5,10 +5,20 @@ import vShader from "./glsl/photo.vs";
 import fShader from "./glsl/photo.fs";
 
 export default class Photo {
-    constructor(_subdivs) {
+    private texAlternation: number;
+    private textureLoader: THREE.TextureLoader;
+    private plane: THREE.Mesh;
+
+    // Uniforms
+    private uniMap0: THREE.IUniform;
+    private uniMap1: THREE.IUniform;
+    private uniHeight: THREE.IUniform;
+    private uniTrans: THREE.IUniform;
+
+    constructor(subdivs: THREE.Vector2) {
         this.texAlternation = 0;
 
-        const geom = new THREE.PlaneBufferGeometry(6, 8, _subdivs.x, _subdivs.y);
+        const geom = new THREE.PlaneBufferGeometry(6, 8, subdivs.x, subdivs.y);
         const material = new THREE.RawShaderMaterial({
             uniforms: {
                 map0: { value: null },
@@ -21,6 +31,7 @@ export default class Photo {
             transparent: true,
             side: THREE.DoubleSide
         });
+        this.plane = new THREE.Mesh(geom, material);
 
         // Uniform shortcuts
         this.uniMap0 = material.uniforms.map0;
@@ -29,18 +40,16 @@ export default class Photo {
         this.uniTrans = material.uniforms.transition;
 
         this.textureLoader = new THREE.TextureLoader();
-        this.plane = new THREE.Mesh(geom, material);
     }
 
-    // ******************* UTILITIES ******************* //
-
+    // ******************* PUBLIC METHODS ******************* //
     // Get image and create texture
-    loadImage(url) {
+    public loadImage(url: string): void {
         this.textureLoader.load(url, this.imageLoaded.bind(this));
     }
 
     // Image texture is ready
-    imageLoaded(texture) {
+    private imageLoaded(texture: THREE.Texture):void {
         texture.minFilter = THREE.LinearFilter;
 
         if (this.texAlternation === 0) {
@@ -53,10 +62,9 @@ export default class Photo {
     }
 
     // ******************* UPDATE ******************* //
-
-    update(_t, _texture) {
+    update(timeDelta: number, heightMap: THREE.Texture):void {
         this.uniTrans.value = zTween(this.uniTrans.value, this.texAlternation, 0.1);
-        this.uniHeight.value = _texture;
+        this.uniHeight.value = heightMap;
     }
 }
 
