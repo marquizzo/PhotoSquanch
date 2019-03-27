@@ -2,22 +2,22 @@
  * Tween to target using Zeno's Paradox
  * If distance between _val & _target is very small, return _target
  */
-export function zTween(_val, _target, _ratio) {
-    return Math.abs(_target - _val) < 1e-5 ? _target : _val + (_target - _val) * Math.min(_ratio, 1.0);
+export function zTween(val: number, target: number, ratio: number): number {
+    return Math.abs(target - val) < 1e-5 ? target : val + (target - val) * Math.min(ratio, 1.0);
 }
 
 // Random integer from <low, high> interval
-export function randInt(low, high) {
+export function randInt(low: number, high: number): number {
     return low + Math.floor(Math.random() * (high - low + 1));
 }
 
 // Javascript mod fix
-export function mod(n, m) {
+export function mod(n: number, m: number): number {
     return (n % m + m) % m;
 }
 
 // Fisher-Yates Shuffle
-export function shuffle(array) {
+export function shuffle(array: Array<any>): Array<any> {
     let m = array.length, t, i;
 
     // While there remain elements to shuffle
@@ -36,18 +36,21 @@ export function shuffle(array) {
 
 // Calculates elapsed time since last frame and other time utils
 export class Clock {
-    constructor(_timeMultip) {
-        this.delta = 0;
-        this.seconds = 0;
-        this.nowTime = 0;
-        this.prevTime = 0;
-        this.totalTime = 0;
-        this.timeMultip = typeof _timeMultip === "undefined" ? 1 : _timeMultip;
-        this.frameCount = 0;
+    public delta: number = 0;
+    public nowTime: number = 0;
+    public totalTime: number = 0;
+    public frameCount: number = 0;
+    public timeMultip: number;
+
+    private seconds: number = 0;
+    private prevTime: number = 0;
+
+    constructor(timeMultiplier: number = 1) {
+        this.timeMultip = timeMultiplier;
     }
 
-    update(_timeStamp) {
-        this.seconds = _timeStamp / 1000;
+    update(timeStampMS: number = 0): void {
+        this.seconds = timeStampMS / 1000;
         this.delta = this.seconds - this.prevTime;
 
         // Avoids long skips if delta is more than 1 second.

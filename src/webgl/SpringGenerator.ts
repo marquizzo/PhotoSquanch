@@ -1,7 +1,7 @@
 import * as THREE from "three";
 
-import springVert from "./glsl/springGPGPU.vs";
-import springFrag from "./glsl/springGPGPU.fs";
+import springVert from "./glsl/spring.vs";
+import springFrag from "./glsl/spring.fs";
 
 export default class SpringGenerator {
     // General properties
