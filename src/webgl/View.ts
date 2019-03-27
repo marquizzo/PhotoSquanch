@@ -7,24 +7,24 @@ import { Clock } from "../utils";
 
 export default class PhotoView {
     // Main classes
-    clock: Clock;
-    brush: Brush;
-    photo: Photo;
-    springGen: SpringGenerator;
+    private clock: Clock;
+    private brush: Brush;
+    private photo: Photo;
+    private springGen: SpringGenerator;
 
     // General properties
-    rendering: boolean;
-    fpsCap: boolean;
-    autoBrush: boolean;
-    vp: THREE.Vector2;
-    photoSize: THREE.Vector2;
-    subdivs: THREE.Vector2;
-    scene: THREE.Scene;
-    cam: THREE.OrthographicCamera;
-    renderer: THREE.WebGLRenderer;
-    springTex: THREE.Texture;
+    private rendering: boolean;
+    private fpsCap: boolean;
+    private autoBrush: boolean;
+    private vp: THREE.Vector2;
+    private photoSize: THREE.Vector2;
+    private subdivs: THREE.Vector2;
+    private scene: THREE.Scene;
+    private cam: THREE.OrthographicCamera;
+    private renderer: THREE.WebGLRenderer;
+    private springTex: THREE.Texture;
 
-    constructor(_canvas, _reticle) {
+    constructor(canvasElem, reticleElem) {
         // General props
         this.rendering = false;
         this.fpsCap = false;
@@ -41,7 +41,7 @@ export default class PhotoView {
         this.scene = new THREE.Scene();
         this.cam = new THREE.OrthographicCamera(-6, 6, 8, -8, -10, 10);
         this.renderer = new THREE.WebGLRenderer({
-            canvas: _canvas,
+            canvas: canvasElem,
             antialias: false,
             alpha: true,
             stencil: false,
@@ -49,84 +49,83 @@ export default class PhotoView {
         this.renderer.setPixelRatio(1);
         this.renderer.setSize(this.vp.x, this.vp.y);
 
-        // Photo
-        this.photo = new Photo(this.subdivs);
-        this.scene.add(this.photo.getMesh());
-
-        // Spring generator
+        // Main classes
         this.clock = new Clock();
-        this.brush = new Brush(_reticle, this.photoSize);
+        this.brush = new Brush(reticleElem, this.photoSize);
         this.springGen = new SpringGenerator(
             this.renderer,
             this.subdivs,
             this.brush.getStartPos(),
             this.brush.getNowPos()
         );
+        this.photo = new Photo(this.subdivs);
+        this.scene.add(this.photo.getMesh());
 
         // Start drag
-        _canvas.addEventListener("mousedown", this.onMouseDown.bind(this));
-        _canvas.addEventListener("touchstart", this.onMouseDown.bind(this));
+        canvasElem.addEventListener("mousedown", this.onMouseDown);
+        canvasElem.addEventListener("touchstart", this.onMouseDown);
         // Drag move
-        _canvas.addEventListener("mousemove", this.onMouseMove.bind(this));
-        _canvas.addEventListener("touchmove", this.onMouseMove.bind(this));
+        canvasElem.addEventListener("mousemove", this.onMouseMove);
+        canvasElem.addEventListener("touchmove", this.onMouseMove);
         // Stop drag
-        _canvas.addEventListener("mouseup", this.onMouseUp.bind(this));
-        _canvas.addEventListener("touchend", this.onMouseUp.bind(this));
-        _canvas.addEventListener("mouseout", this.onMouseOut.bind(this));
+        canvasElem.addEventListener("mouseup", this.onMouseUp);
+        canvasElem.addEventListener("touchend", this.onMouseUp);
+        canvasElem.addEventListener("mouseout", this.onMouseOut);
         // Mouse wheel
-        _canvas.addEventListener("wheel", this.onMouseWheel.bind(this));
+        canvasElem.addEventListener("wheel", this.onMouseWheel);
         this.onMouseWheel({deltaY: 0});
 
         // Fire up rendering loop
         this.update(0);
     }
 
-    loadImage(_url) {
-        this.photo.loadImage(_url);
+    // ******************* PUBLIC METHODS ******************* //
+    public loadImage(url: string): void {
+        this.photo.loadImage(url);
         this.resumeRender();
     }
 
-    pauseRender() {
+    public pauseRender(): void {
         this.rendering = false;
     }
 
-    resumeRender() {
+    public resumeRender(): void {
         this.rendering = true;
     }
 
     // ******************* MOUSE EVENT LISTENERS ******************* //
-    onMouseDown(_evt) {
+    private onMouseDown = (event): void => {
         // this.renderer.domElement.style.cursor = "grabbing";
         this.autoBrush = false;
-        this.brush.pressDown(_evt.layerX, _evt.layerY);
-        _evt.preventDefault();
+        this.brush.pressDown(event.layerX, event.layerY);
+        event.preventDefault();
     }
 
-    onMouseMove(_evt) {
+    private onMouseMove = (event): void => {
         if (this.autoBrush === false) {
-            this.brush.move(_evt.layerX, _evt.layerY);
+            this.brush.move(event.layerX, event.layerY);
         }
-        _evt.preventDefault();
+        event.preventDefault();
     }
 
-    onMouseUp(_evt) {
+    private onMouseUp = (event): void => {
         // this.renderer.domElement.style.cursor = "grab";
         this.brush.release();
-        _evt.preventDefault();
+        event.preventDefault();
     }
 
-    onMouseOut(_evt) {
+    private onMouseOut = (event): void => {
         this.brush.outOfBounds();
-        _evt.preventDefault();
+        event.preventDefault();
     }
 
-    onMouseWheel(_evt) {
-        let bSize = this.brush.scale(_evt.deltaY * 0.3, this.subdivs.y);
+    private onMouseWheel = (event): void => {
+        let bSize = this.brush.scale(event.deltaY * 0.3, this.subdivs.y);
         this.springGen.setMouseSize(bSize);
     }
 
-    // Updates once per frame
-    update(_t) {
+    // ******************* UPDATE ******************* //
+    private update = (_t): void => {
         if (this.rendering && !this.fpsCap) {
             this.clock.update(_t);
             this.springTex = this.springGen.update(this.clock.delta);
@@ -140,6 +139,6 @@ export default class PhotoView {
             }
         }
         this.fpsCap = !this.fpsCap;
-        requestAnimationFrame(this.update.bind(this));
+        requestAnimationFrame(this.update);
     }
 }

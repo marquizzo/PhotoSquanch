@@ -27,13 +27,13 @@ export default class SpringGenerator {
     private devCam: THREE.Camera;
     private devMat: THREE.MeshBasicMaterial;
 
-    constructor(_renderer: THREE.WebGLRenderer, _subdivs: THREE.Vector2, _mouseStart: THREE.Vector2, _mouseNow: THREE.Vector2) {
+    constructor(renderer: THREE.WebGLRenderer, subdivs: THREE.Vector2, mouseStart: THREE.Vector2, mouseNow: THREE.Vector2) {
         this.devMode = false;
         this.targetSwap = false;
-        this.subdivs = _subdivs;
-        this.renderer = _renderer;
+        this.subdivs = subdivs;
+        this.renderer = renderer;
         this.ogSize = new THREE.Vector2;
-        _renderer.getSize(this.ogSize);
+        renderer.getSize(this.ogSize);
 
         // Init render targets
         this.rTarget1 = new THREE.WebGLRenderTarget(this.subdivs.x, this.subdivs.y, {
@@ -59,8 +59,8 @@ export default class SpringGenerator {
         const springGeom = new THREE.PlaneBufferGeometry(2, 2);
         const springMat = new THREE.RawShaderMaterial({
             uniforms: {
-                mouseStart: {value: _mouseStart},
-                mouseNow: {value: _mouseNow},
+                mouseStart: {value: mouseStart},
+                mouseNow: {value: mouseNow},
                 mouseSize: {value: 30.0},
                 heightmap: {value: null},
                 timeDelta: {value: 0}
