@@ -4,25 +4,28 @@ import springVert from "./glsl/springGPGPU.vs";
 import springFrag from "./glsl/springGPGPU.fs";
 
 export default class SpringGenerator {
-    targetSwap: boolean;
-    subdivs: THREE.Vector2;
-    renderer: THREE.WebGLRenderer;
-    ogSize: THREE.Vector2;
-    rTarget1: THREE.WebGLRenderTarget;
-    rTarget2: THREE.WebGLRenderTarget;
-    rTargetActive: THREE.WebGLRenderTarget;
-    rTargetInactive: THREE.WebGLRenderTarget;
-    springScene: THREE.Scene;
-    springCam: THREE.Camera;
-    uniHeightMap: THREE.IUniform;
-    uniTimeDelta: THREE.IUniform;
-    uniMouseSize: THREE.IUniform;
+    // General properties
+    private subdivs: THREE.Vector2;
+    private renderer: THREE.WebGLRenderer;
+    private ogSize: THREE.Vector2;
+    private targetSwap: boolean;
+    
+    // Render targets
+    private rTarget1: THREE.WebGLRenderTarget;
+    private rTarget2: THREE.WebGLRenderTarget;
+    private rTargetActive: THREE.WebGLRenderTarget;
+    private rTargetInactive: THREE.WebGLRenderTarget;
+    private springScene: THREE.Scene;
+    private springCam: THREE.Camera;
+    private uniHeightMap: THREE.IUniform;
+    private uniTimeDelta: THREE.IUniform;
+    private uniMouseSize: THREE.IUniform;
 
     // Dev variables
-    devMode: boolean;
-    devScene: THREE.Scene;
-    devCam: THREE.Camera;
-    devMat: THREE.MeshBasicMaterial;
+    private devMode: boolean;
+    private devScene: THREE.Scene;
+    private devCam: THREE.Camera;
+    private devMat: THREE.MeshBasicMaterial;
 
     constructor(_renderer: THREE.WebGLRenderer, _subdivs: THREE.Vector2, _mouseStart: THREE.Vector2, _mouseNow: THREE.Vector2) {
         this.devMode = false;
@@ -32,7 +35,7 @@ export default class SpringGenerator {
         this.ogSize = new THREE.Vector2;
         _renderer.getSize(this.ogSize);
 
-        // Set up render targets
+        // Init render targets
         this.rTarget1 = new THREE.WebGLRenderTarget(this.subdivs.x, this.subdivs.y, {
             minFilter: THREE.LinearFilter,
             magFilter: THREE.LinearFilter,
@@ -47,7 +50,7 @@ export default class SpringGenerator {
         this.rTargetActive = this.rTarget1;
         this.rTargetInactive = this.rTarget2;
 
-        // Set up scene for calculating spring
+        // Set up spring scene
         this.springScene = new THREE.Scene();
         this.springCam = new THREE.Camera();
         this.springCam.position.z = 1;
@@ -90,15 +93,15 @@ export default class SpringGenerator {
         }
     }
 
-    getDataType() {
+    private getDataType(): THREE.TextureDataType {
         return (/(iPad|iPhone|iPod)/g).test(navigator.userAgent) ? THREE.HalfFloatType : THREE.FloatType;
     }
 
-    setMouseSize(_newSize) {
-        this.uniMouseSize.value = _newSize;
+    public setMouseSize(newSize: number):void {
+        this.uniMouseSize.value = newSize;
     }
 
-    update(_tD) {
+    public update(deltaTime: number): THREE.Texture {
         this.targetSwap = !this.targetSwap;
 
         if (this.targetSwap) {
@@ -109,7 +112,7 @@ export default class SpringGenerator {
             this.rTargetInactive = this.rTarget1;
         }
 
-        this.uniTimeDelta.value = _tD;
+        this.uniTimeDelta.value = deltaTime;
         this.uniHeightMap.value = this.rTargetInactive.texture;
         this.renderer.setRenderTarget(this.rTargetActive);
         this.renderer.render(this.springScene, this.springCam);
