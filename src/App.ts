@@ -5,9 +5,13 @@
  */
 
 import View from "./webgl/View";
-import { shuffle } from "./utils";
+import { shuffle, mod } from "./utils";
 
 class App {
+    private view: View;
+    private allImages: Array<string>;
+    private imgIndex: number;
+
     constructor() {
         const canvasBox = document.getElementById("photo-canvas");
         const reticleRef = document.getElementById("photo-reticle");
@@ -33,25 +37,20 @@ class App {
     // ******************* View API ******************* //
 
     // Loads image in URL
-    loadImage(url) {
+    private loadImage(url: string): void {
         this.view.loadImage(url);
     }
 
     // Goes to previous image
-    showPrevImage() {
-        this.imgIndex = this.mod(this.imgIndex - 1, this.allImages.length);
+    private showPrevImage(): void {
+        this.imgIndex = mod(this.imgIndex - 1, this.allImages.length);
         this.loadImage(this.allImages[this.imgIndex]);
     }
 
     // Goes to next image
-    showNextImage() {
+    private showNextImage(): void {
         this.imgIndex = (this.imgIndex + 1) % this.allImages.length;
         this.loadImage(this.allImages[this.imgIndex]);
-    }
-
-    // Javascript mod fix
-    mod(n, m) {
-        return (n % m + m) % m;
     }
 }
 

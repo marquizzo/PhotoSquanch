@@ -5,7 +5,7 @@ var path = require("path");
 // http://webpack.github.io/docs/configuration.html
 module.exports = {
 	entry:{
-		photoSquanch: "./src/App.js",
+		photoSquanch: "./src/App.ts",
 	},
 
 	output:{

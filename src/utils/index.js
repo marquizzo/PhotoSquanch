@@ -11,6 +11,11 @@ export function randInt(low, high) {
     return low + Math.floor(Math.random() * (high - low + 1));
 }
 
+// Javascript mod fix
+export function mod(n, m) {
+    return (n % m + m) % m;
+}
+
 // Fisher-Yates Shuffle
 export function shuffle(array) {
     let m = array.length, t, i;
