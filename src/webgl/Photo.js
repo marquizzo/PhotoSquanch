@@ -1,8 +1,8 @@
 import * as THREE from "three";
-import { zTween } from "./Utils/";
+import { zTween } from "../utils/";
 
-import vShader from "./glsl/photo.vert";
-import fShader from "./glsl/photo.frag";
+import vShader from "./glsl/photo.vs";
+import fShader from "./glsl/photo.fs";
 
 export default class Photo {
     constructor(_subdivs) {

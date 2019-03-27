@@ -3,7 +3,7 @@ import * as THREE from "three";
 import Photo from "./Photo";
 import SpringGenerator from "./SpringGenerator";
 import Brush from "./Brush";
-import { Clock } from "./Utils";
+import { Clock } from "../utils";
 
 export default class PhotoView {
     constructor(_canvas, _reticle) {
@@ -112,6 +112,8 @@ export default class PhotoView {
             this.clock.update(_t);
             this.springTex = this.springGen.update(this.clock.delta);
             this.photo.update(this.clock.nowTime, this.springTex);
+
+            this.renderer.setRenderTarget(null);
             this.renderer.render(this.scene, this.cam);
 
             if (this.autoBrush) {

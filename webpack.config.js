@@ -29,7 +29,7 @@ module.exports = {
 			// Test file extension to run loader
 			{
 				test: /\.(glsl|vs|fs)$/, 
-				loader: "shader-loader"
+				loader: "ts-shader-loader"
 			},
 			{
 				test: /\.tsx?$/, 

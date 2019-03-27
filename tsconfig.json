@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es5",
+        // "sourceMap": true,
+        "noImplicitAny": false, // lets you know if any of your expressions or declarations have an implied "any" type. 
+        "suppressImplicitAnyIndexErrors": true, // Allows you to access non-constant properties, such as object[keyVar]
+        "lib": ["es2015", "dom"],
+        "baseUrl": "./",
+        "paths": {
+            "utils/": ["./src/utils/"]
+        }
+    },
+    "exclude": [
+        "node_modules"
+    ]
+}

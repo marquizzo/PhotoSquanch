@@ -1,15 +1,36 @@
 import * as THREE from "three";
 
-import springVert from "./glsl/springGPGPU.vert";
-import springFrag from "./glsl/springGPGPU.frag";
+import springVert from "./glsl/springGPGPU.vs";
+import springFrag from "./glsl/springGPGPU.fs";
 
 export default class SpringGenerator {
-    constructor(_renderer, _subdivs, _mouseStart, _mouseNow) {
+    targetSwap: boolean;
+    subdivs: THREE.Vector2;
+    renderer: THREE.WebGLRenderer;
+    ogSize: THREE.Vector2;
+    rTarget1: THREE.WebGLRenderTarget;
+    rTarget2: THREE.WebGLRenderTarget;
+    rTargetActive: THREE.WebGLRenderTarget;
+    rTargetInactive: THREE.WebGLRenderTarget;
+    springScene: THREE.Scene;
+    springCam: THREE.Camera;
+    uniHeightMap: THREE.IUniform;
+    uniTimeDelta: THREE.IUniform;
+    uniMouseSize: THREE.IUniform;
+
+    // Dev variables
+    devMode: boolean;
+    devScene: THREE.Scene;
+    devCam: THREE.Camera;
+    devMat: THREE.MeshBasicMaterial;
+
+    constructor(_renderer: THREE.WebGLRenderer, _subdivs: THREE.Vector2, _mouseStart: THREE.Vector2, _mouseNow: THREE.Vector2) {
         this.devMode = false;
         this.targetSwap = false;
         this.subdivs = _subdivs;
         this.renderer = _renderer;
-        this.ogSize = _renderer.getSize();
+        this.ogSize = new THREE.Vector2;
+        _renderer.getSize(this.ogSize);
 
         // Set up render targets
         this.rTarget1 = new THREE.WebGLRenderTarget(this.subdivs.x, this.subdivs.y, {
@@ -90,13 +111,14 @@ export default class SpringGenerator {
 
         this.uniTimeDelta.value = _tD;
         this.uniHeightMap.value = this.rTargetInactive.texture;
-        this.renderer.render(this.springScene, this.springCam, this.rTargetActive);
+        this.renderer.setRenderTarget(this.rTargetActive);
+        this.renderer.render(this.springScene, this.springCam);
 
         if (this.devMode) {
             this.devMat.map = this.rTargetActive.texture;
             this.renderer.setViewport(0, 0, this.subdivs.x * 2.0, this.subdivs.y * 2.0);
             this.renderer.render(this.devScene, this.devCam);
-            this.renderer.setViewport(0, 0, this.ogSize.width, this.ogSize.height);
+            this.renderer.setViewport(0, 0, this.ogSize.x, this.ogSize.y);
         }
 
         return this.rTargetActive.texture;

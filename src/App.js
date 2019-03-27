@@ -1,31 +1,28 @@
 /*
  * App.js
  * ===========
- * API layer communicating between HTML and PhotoView.
+ * API layer communicating between HTML and View.
  */
 
-// import PhotoView from "./webgl/PhotoView";
+import View from "./webgl/View";
 import { shuffle } from "./utils";
-console.log("Hey yo!");
 
-export default class App {
+class App {
     constructor() {
-        // const canvasRef = document.getElementById("photo-canvas");
-        // const reticleRef = document.getElementById("photo-reticle");
+        const canvasBox = document.getElementById("photo-canvas");
+        const reticleRef = document.getElementById("photo-reticle");
 
-        // this.view = new PhotoView(canvasRef, reticleRef);
-        // this.allImages = shuffle([
-        //     "images/people-claudine.jpg",
-        //     "images/people-kyle.jpg",
-        //     "images/people-steed.jpg",
-        //     "images/people-ryan.jpg",
-        //     "images/people-caio.jpg",
-        //     "images/people-michelle.jpg",
-        //     "images/people-kelsey.jpg",
-        //     "images/people-scavo.jpg",
-        // ]);
-        // this.imgIndex = -1;
-        // this.showNextImage();
+        this.view = new View(canvasBox, reticleRef);
+        this.allImages = shuffle([
+            "img/cap.jpg",
+            "img/hulk.jpg",
+            "img/ironman.jpg",
+            "img/loki.jpg",
+            "img/spiderman.jpg",
+            "img/thor.jpg"
+        ]);
+        this.imgIndex = -1;
+        this.showNextImage();
 
         // document.getElementById("photo-last")
         //     .addEventListener("click", this.showPrevImage.bind(this));
@@ -33,7 +30,7 @@ export default class App {
         //     .addEventListener("click", this.showNextImage.bind(this));
     }
 
-    // ******************* PhotoView API ******************* //
+    // ******************* View API ******************* //
 
     // Loads image in URL
     loadImage(url) {
@@ -57,3 +54,5 @@ export default class App {
         return (n % m + m) % m;
     }
 }
+
+const app = new App();
