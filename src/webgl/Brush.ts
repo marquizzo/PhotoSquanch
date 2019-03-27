@@ -74,6 +74,15 @@ export default class Brush {
         return this.size;
     }
 
+    // ******************* GETTERS ******************* //
+    public getStartPos(): THREE.Vector2 {
+        return this.startPos;
+    }
+
+    public getNowPos(): THREE.Vector2 {
+        return this.nowPos;
+    }
+
     // ******************* AUTOBRUSH ******************* //
     public countdown(timeDelta: number): void {
         this.autoTimer -= timeDelta;

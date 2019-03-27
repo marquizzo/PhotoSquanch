@@ -6,6 +6,24 @@ import Brush from "./Brush";
 import { Clock } from "../utils";
 
 export default class PhotoView {
+    // Main classes
+    clock: Clock;
+    brush: Brush;
+    photo: Photo;
+    springGen: SpringGenerator;
+
+    // General properties
+    rendering: boolean;
+    fpsCap: boolean;
+    autoBrush: boolean;
+    vp: THREE.Vector2;
+    photoSize: THREE.Vector2;
+    subdivs: THREE.Vector2;
+    scene: THREE.Scene;
+    cam: THREE.OrthographicCamera;
+    renderer: THREE.WebGLRenderer;
+    springTex: THREE.Texture;
+
     constructor(_canvas, _reticle) {
         // General props
         this.rendering = false;
@@ -19,7 +37,7 @@ export default class PhotoView {
         // Subdivisions of photo grid (3 * 16, 4 * 16)
         this.subdivs = this.photoSize.clone().multiplyScalar(Math.pow(2, 4) / 100);
 
-        // Three.js standards
+        // Three.js boilerplate
         this.scene = new THREE.Scene();
         this.cam = new THREE.OrthographicCamera(-6, 6, 8, -8, -10, 10);
         this.renderer = new THREE.WebGLRenderer({
@@ -31,18 +49,19 @@ export default class PhotoView {
         this.renderer.setPixelRatio(1);
         this.renderer.setSize(this.vp.x, this.vp.y);
 
+        // Photo
+        this.photo = new Photo(this.subdivs);
+        this.scene.add(this.photo.getMesh());
+
         // Spring generator
         this.clock = new Clock();
         this.brush = new Brush(_reticle, this.photoSize);
         this.springGen = new SpringGenerator(
             this.renderer,
             this.subdivs,
-            this.brush.start,
-            this.brush.now
+            this.brush.getStartPos(),
+            this.brush.getNowPos()
         );
-        this.springTex = null;
-        this.photo = new Photo(this.subdivs);
-        this.scene.add(this.photo.plane);
 
         // Start drag
         _canvas.addEventListener("mousedown", this.onMouseDown.bind(this));
@@ -102,8 +121,8 @@ export default class PhotoView {
     }
 
     onMouseWheel(_evt) {
-        this.brush.scale(_evt.deltaY * 0.3, this.subdivs.y);
-        this.springGen.setMouseSize(this.brush.size);
+        let bSize = this.brush.scale(_evt.deltaY * 0.3, this.subdivs.y);
+        this.springGen.setMouseSize(bSize);
     }
 
     // Updates once per frame

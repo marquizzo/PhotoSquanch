@@ -7,7 +7,7 @@ import fShader from "./glsl/photo.fs";
 export default class Photo {
     private texAlternation: number;
     private textureLoader: THREE.TextureLoader;
-    private plane: THREE.Mesh;
+    private mesh: THREE.Mesh;
 
     // Uniforms
     private uniMap0: THREE.IUniform;
@@ -31,7 +31,7 @@ export default class Photo {
             transparent: true,
             side: THREE.DoubleSide
         });
-        this.plane = new THREE.Mesh(geom, material);
+        this.mesh = new THREE.Mesh(geom, material);
 
         // Uniform shortcuts
         this.uniMap0 = material.uniforms.map0;
@@ -43,6 +43,10 @@ export default class Photo {
     }
 
     // ******************* PUBLIC METHODS ******************* //
+    public getMesh(): THREE.Mesh {
+        return this.mesh;
+    }
+
     // Get image and create texture
     public loadImage(url: string): void {
         this.textureLoader.load(url, this.imageLoaded.bind(this));
