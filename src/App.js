@@ -4,32 +4,33 @@
  * API layer communicating between HTML and PhotoView.
  */
 
-import PhotoView from "./webgl/PhotoView";
-import { shuffle } from "./webgl/Utils";
+// import PhotoView from "./webgl/PhotoView";
+import { shuffle } from "./utils";
+console.log("Hey yo!");
 
 export default class App {
     constructor() {
-        const canvasRef = document.getElementById("photo-canvas");
-        const reticleRef = document.getElementById("photo-reticle");
+        // const canvasRef = document.getElementById("photo-canvas");
+        // const reticleRef = document.getElementById("photo-reticle");
 
-        this.view = new PhotoView(canvasRef, reticleRef);
-        this.allImages = shuffle([
-            "images/people-claudine.jpg",
-            "images/people-kyle.jpg",
-            "images/people-steed.jpg",
-            "images/people-ryan.jpg",
-            "images/people-caio.jpg",
-            "images/people-michelle.jpg",
-            "images/people-kelsey.jpg",
-            "images/people-scavo.jpg",
-        ]);
-        this.imgIndex = -1;
-        this.showNextImage();
+        // this.view = new PhotoView(canvasRef, reticleRef);
+        // this.allImages = shuffle([
+        //     "images/people-claudine.jpg",
+        //     "images/people-kyle.jpg",
+        //     "images/people-steed.jpg",
+        //     "images/people-ryan.jpg",
+        //     "images/people-caio.jpg",
+        //     "images/people-michelle.jpg",
+        //     "images/people-kelsey.jpg",
+        //     "images/people-scavo.jpg",
+        // ]);
+        // this.imgIndex = -1;
+        // this.showNextImage();
 
-        document.getElementById("photo-last")
-            .addEventListener("click", this.showPrevImage.bind(this));
-        document.getElementById("photo-next")
-            .addEventListener("click", this.showNextImage.bind(this));
+        // document.getElementById("photo-last")
+        //     .addEventListener("click", this.showPrevImage.bind(this));
+        // document.getElementById("photo-next")
+        //     .addEventListener("click", this.showNextImage.bind(this));
     }
 
     // ******************* PhotoView API ******************* //
