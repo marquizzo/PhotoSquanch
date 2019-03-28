@@ -13,6 +13,9 @@ class App {
     private allImages: Array<string>;
     private imgIndex: number;
 
+    switchLock: HTMLElement;
+    switchWire: HTMLElement;
+
     constructor() {
         const canvasBox = <HTMLCanvasElement>document.getElementById("photo-canvas");
         const svgRef: SVGElement = <any>document.getElementById("photo-svg");
@@ -28,15 +31,39 @@ class App {
         ]);
         this.imgIndex = -1;
         this.showNextImage();
+        this.addEventListeners();
 
-        // document.getElementById("photo-last")
-        //     .addEventListener("click", this.showPrevImage.bind(this));
-        // document.getElementById("photo-next")
-        //     .addEventListener("click", this.showNextImage.bind(this));
-        window.addEventListener("resize", this.onResize);
+    }
+    private addEventListeners(): void {
+        // Brush section
+        this.switchLock = document.getElementById("switch-lock");
+        this.switchWire = document.getElementById("switch-wire");
+        this.switchLock.addEventListener("click", this.toggleLock);
+        this.switchWire.addEventListener("click", this.toggleWire);
+        // Image section
+        document.getElementById("img-prev")
+            .addEventListener("click", this.showPrevImage.bind(this));
+        document.getElementById("img-next")
+            .addEventListener("click", this.showNextImage.bind(this));
+        window.addEventListener("resize", this.onResize);        
     }
 
     // ******************* View API ******************* //
+    private toggleLock = (event: MouseEvent): void =>{
+        if (this.switchLock.classList.contains("active")) {
+            this.switchLock.classList.remove("active");
+        } else {
+            this.switchLock.classList.add("active");
+        }
+    }
+    private toggleWire = (event: MouseEvent): void => {
+        if (this.switchWire.classList.contains("active")) {
+            this.switchWire.classList.remove("active");
+        } else {
+            this.switchWire.classList.add("active");
+        }
+    }
+
     // Loads image in URL
     private loadImage(url: string): void {
         this.view.loadImage(url);

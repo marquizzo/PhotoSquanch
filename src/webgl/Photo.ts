@@ -69,7 +69,7 @@ export default class Photo {
 
     // ******************* UPDATE ******************* //
     update(timeDelta: number, heightMap: THREE.Texture):void {
-        this.uniTrans.value = zTween(this.uniTrans.value, this.texAlternation, 0.1);
+        this.uniTrans.value = zTween(this.uniTrans.value, this.texAlternation, 0.5);
         this.uniHeight.value = heightMap;
     }
 }

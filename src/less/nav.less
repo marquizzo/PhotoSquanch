@@ -1,0 +1,112 @@
+// Variables
+@color-black1:  #1d242d;
+@color-black2:  #272f3d;
+@color-black3:  #343f4d;
+@color-gray1:   #464f61;
+@color-gray2:   #5f697d;
+@color-white1:  #c8c8c8;
+@color-white2:  #ededed;
+@color-blue:    #3c7fca;
+
+nav {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 220px;
+    height: 100%;
+    background: @color-black2;
+    font-size: 12px;
+    color: @color-white1;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+}
+section {
+    margin: 15px 10px 15px;
+    border-bottom: 2px solid @color-black3;
+}
+article {
+    padding: 5px 0px;
+    margin: 5px 0px;
+}
+h1 {
+    font-size: 20px;
+    font-weight: 600;
+    color: @color-gray2;
+    margin: 0;
+}
+h2 {
+    font-size: 12px;
+    font-weight: 400;
+    margin: 0;
+}
+
+.slider,
+.btn-single,
+.switch {
+    background: @color-black3;
+    &:hover {
+        background: @color-black1;
+    }
+}
+
+//////////////////// SLIDER
+.slider {
+    width: 200px;
+    height: 20px;
+    border-radius: 5px;
+    overflow: hidden;
+    cursor: pointer;
+    .slider-prog {
+        width: 30%;
+        height: 100%;
+        background: @color-blue;
+    }
+}
+
+//////////////////// BUTTON ROW
+.btn-row {
+    width: auto;
+    height: 30px;
+    overflow: hidden;
+    display: inline-block;
+    border-radius: 5px;
+    .btn-single {
+        width: 50px;
+        height: 100%;
+        float: left;
+        box-sizing: border-box;
+        display: inline-block;
+        border-right: 1px solid @color-black2;
+        cursor: pointer;
+        text-align: center;
+        line-height: 30px;
+        &.active {
+            background: @color-blue;
+        }
+    }
+}
+
+//////////////////// SWITCH
+.switch {
+    width: 60px;
+    height: 30px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+    .switch-knob {
+        width: 50%;
+        height: 100%;
+        border-radius: 6px;
+        background: @color-white1;
+        border: 2px solid @color-black3;
+        box-sizing: border-box;
+        transition: all 0.3s ease-in-out;
+    }
+    &.active {
+        background: @color-blue;
+        .switch-knob {
+            border-color: @color-blue;
+            margin-left: 50%;
+        }
+    }
+}

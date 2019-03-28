@@ -20,7 +20,7 @@ export default class SpringGenerator {
     private uniBrushSize: THREE.IUniform;
 
     // Dev variables
-    private devMode: boolean = true;
+    private devMode: boolean = false;
     private devScene: THREE.Scene;
     private devCam: THREE.Camera;
     private devMat: THREE.MeshBasicMaterial;

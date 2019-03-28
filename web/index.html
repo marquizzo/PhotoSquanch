@@ -7,6 +7,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no,shrink-to-fit=no">
 	<meta name="description" content="A fun Three-JS tool to squanch your friends faces">
 	<meta name="author" content="Marquizzo">
+  <style type="text/css">@import url('https://fonts.googleapis.com/css?family=Rajdhani:400,600');</style>
 	<link rel="stylesheet" type="text/css" href="css/photoSquanch.css">
 </head>
 <body>
@@ -21,14 +22,46 @@
 <nav>
   <section>
     <h1>Brush</h1>
-    <h2>Size</h2>
-    <h2>Falloff</h2>
-    <h2>Lock</h2>
-    <h2>Wireframe</h2>
+    <article>
+      <h2>Size</h2>
+      <div class="slider">
+        <div class="slider-prog"></div>
+      </div>
+    </article>
+
+    <article>
+      <h2>Falloff</h2>
+      <div class="btn-row">
+        <div class="btn-single"></div>
+        <div class="btn-single active"></div>
+        <div class="btn-single"></div>
+        <div class="btn-single"></div>
+      </div>
+    </article>
+
+    <article>
+      <h2>Lock</h2>
+      <div class="switch" id="switch-lock">
+        <div class="switch-knob"></div>
+      </div>
+    </article>
+    
+    <article>
+      <h2>Wireframe</h2>
+      <div class="switch" id="switch-wire">
+        <div class="switch-knob"></div>
+      </div>
+    </article>
   </section>
   <section>
     <h1>Image</h1>
-    <h2>Swap</h2>
+    <article>
+      <h2>Change</h2>
+      <div class="btn-row">
+        <div class="btn-single" id="img-prev">Prev</div>
+        <div class="btn-single" id="img-next">Next</div>
+      </div>
+    </article>
   </section>
 </nav>
 
