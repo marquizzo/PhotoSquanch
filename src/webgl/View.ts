@@ -29,9 +29,9 @@ export default class PhotoView {
         // General props
         this.rendering = false;
         this.fpsCap = false;
-        this.autoBrush = true;
+        this.autoBrush = false;
         this.photoScale = 0.5;
-        SUBDIVS.set(3 * 16, 4 * 16);
+        SUBDIVS.set(3 * 32, 4 * 32);
 
         // Three.js boilerplate
         this.scene = new THREE.Scene();
@@ -75,6 +75,14 @@ export default class PhotoView {
     }
 
     // ******************* PUBLIC METHODS ******************* //
+    public toggleLock(enable: boolean): void {
+        this.brush.setLock(enable);
+    }
+
+    public toggleWire(enable: boolean): void {
+        this.photo.setWireframe(enable);
+    }
+
     public loadImage(url: string): void {
         this.photo.loadImage(url);
         this.resumeRender();

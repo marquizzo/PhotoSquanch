@@ -8,6 +8,7 @@ import fShader from "./glsl/photo.fs";
 export default class Photo {
     private texAlternation: number;
     private textureLoader: THREE.TextureLoader;
+    private mat: THREE.RawShaderMaterial;
     private mesh: THREE.Mesh;
 
     // Uniforms
@@ -20,7 +21,7 @@ export default class Photo {
         this.texAlternation = 0;
 
         const geom = new THREE.PlaneBufferGeometry(7.5, 10, SUBDIVS.x, SUBDIVS.y);
-        const material = new THREE.RawShaderMaterial({
+        this.mat = new THREE.RawShaderMaterial({
             uniforms: {
                 map0: { value: null },
                 map1: { value: null },
@@ -31,15 +32,14 @@ export default class Photo {
             fragmentShader: fShader,
             transparent: true,
             side: THREE.DoubleSide,
-            wireframe: true
         });
-        this.mesh = new THREE.Mesh(geom, material);
+        this.mesh = new THREE.Mesh(geom, this.mat);
 
         // Uniform shortcuts
-        this.uniMap0 = material.uniforms.map0;
-        this.uniMap1 = material.uniforms.map1;
-        this.uniHeight = material.uniforms.heightmap;
-        this.uniTrans = material.uniforms.transition;
+        this.uniMap0 = this.mat.uniforms.map0;
+        this.uniMap1 = this.mat.uniforms.map1;
+        this.uniHeight = this.mat.uniforms.heightmap;
+        this.uniTrans = this.mat.uniforms.transition;
 
         this.textureLoader = new THREE.TextureLoader();
     }
@@ -47,6 +47,10 @@ export default class Photo {
     // ******************* PUBLIC METHODS ******************* //
     public getMesh(): THREE.Mesh {
         return this.mesh;
+    }
+
+    public setWireframe(value: boolean): void {
+        this.mat.wireframe = value;
     }
 
     // Get image and create texture

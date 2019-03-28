@@ -7,6 +7,7 @@ export default class Brush {
     private size: number;
     private pointerDown: boolean;
     private autoTimer: number;
+    private locked: boolean = false;
     private nowPos: THREE.Vector2;
     private startPos: THREE.Vector2;
 
@@ -59,7 +60,9 @@ export default class Brush {
     }
 
     public release(): void {
-        this.nowPos.copy(this.startPos);
+        if (!this.locked) {
+            this.nowPos.copy(this.startPos);
+        }
         this.reticle.style.opacity = "1";
         this.pointerDown = false;
     }
@@ -83,13 +86,20 @@ export default class Brush {
         this.scale(0);
     }
 
-    // ******************* GETTERS ******************* //
+    // ******************* GETTERS / SETTERS ******************* //
     public getStartPos(): THREE.Vector2 {
         return this.startPos;
     }
 
     public getNowPos(): THREE.Vector2 {
         return this.nowPos;
+    }
+
+    public setLock(value: boolean): void {
+        this.locked = value;
+        if (!this.locked) {
+            this.release();
+        }
     }
 
     // ******************* AUTOBRUSH ******************* //

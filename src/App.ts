@@ -13,8 +13,11 @@ class App {
     private allImages: Array<string>;
     private imgIndex: number;
 
-    switchLock: HTMLElement;
-    switchWire: HTMLElement;
+    // UI Elements
+    // Brush
+    private sliderSize: HTMLElement;
+    private switchLock: HTMLElement;
+    private switchWire: HTMLElement;
 
     constructor() {
         const canvasBox = <HTMLCanvasElement>document.getElementById("photo-canvas");
@@ -50,17 +53,25 @@ class App {
 
     // ******************* View API ******************* //
     private toggleLock = (event: MouseEvent): void =>{
-        if (this.switchLock.classList.contains("active")) {
+        const lockEnabled = this.switchLock.classList.contains("active");
+
+        if (lockEnabled) {
             this.switchLock.classList.remove("active");
+            this.view.toggleLock(false);
         } else {
             this.switchLock.classList.add("active");
+            this.view.toggleLock(true);
         }
     }
     private toggleWire = (event: MouseEvent): void => {
-        if (this.switchWire.classList.contains("active")) {
+        const wireEnabled = this.switchWire.classList.contains("active");
+
+        if (wireEnabled) {
             this.switchWire.classList.remove("active");
+            this.view.toggleWire(false);
         } else {
             this.switchWire.classList.add("active");
+            this.view.toggleWire(true);
         }
     }
 
