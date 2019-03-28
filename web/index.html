@@ -7,32 +7,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no,shrink-to-fit=no">
 	<meta name="description" content="A fun Three-JS tool to squanch your friends faces">
 	<meta name="author" content="Marquizzo">
-<!-- 	<link rel="stylesheet" type="text/css" href="css/photoSquanch.css"> -->
-  <style type="text/css">
-    body, html{
-    	margin: 0px;
-    	padding: 0px;
-    	overflow: hidden;
-      background: #000;
-    }
-    #pageMain {
-      width: 100%;
-      height: 100%;
-    }
-    #photo-svg {
-      position: absolute;
-      top: 0;
-      left: 0;
-      pointer-events: none;
-    }
-    #photo-svg circle{
-      fill: none;
-      stroke: rgba(255, 255, 255, 0.3);
-      stroke-width: 2px;
-      -webkit-transition: opacity 0.5s ease-out;
-      transition: opacity 0.5s ease-out;
-    }
-  </style>
+	<link rel="stylesheet" type="text/css" href="css/photoSquanch.css">
 </head>
 <body>
 
@@ -42,6 +17,20 @@
       <circle cx="-100" cy="-100" r="30" id="photo-reticle"/>
   </svg>
 </main>
+
+<nav>
+  <section>
+    <h1>Brush</h1>
+    <h2>Size</h2>
+    <h2>Falloff</h2>
+    <h2>Lock</h2>
+    <h2>Wireframe</h2>
+  </section>
+  <section>
+    <h1>Image</h1>
+    <h2>Swap</h2>
+  </section>
+</nav>
 
 <!-- Magical goodness --> 
 <script src="js/photoSquanch.js"></script>

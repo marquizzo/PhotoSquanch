@@ -1,6 +1,14 @@
-var webpack = require("webpack");
-var path = require("path");
-//var ExtractTextPlugin = require("extract-text-webpack-plugin");
+const webpack = require("webpack");
+const path = require("path");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+
+const miniCSS = new MiniCssExtractPlugin({
+	// Options similar to the same options in webpackOptions.output
+	// both options are optional
+	filename: "css/[name].css",
+	chunkFilename: "[id].css"
+})
+
 
 // http://webpack.github.io/docs/configuration.html
 module.exports = {
@@ -36,20 +44,19 @@ module.exports = {
 				exclude: [/node_modules/, /tsOld/],
 				loader: "ts-loader"
 			},
-			/*{
-				test: /\.less$/,
-				use: ExtractTextPlugin.extract({
-					use: ["css-loader?url=false", "less-loader"]
-				})
-			}*/
+			{
+	            test: /\.less$/,
+				use: [
+					MiniCssExtractPlugin.loader,
+					'css-loader',
+					'less-loader'
+				]
+	        }
 		]
 	},
 
 	plugins:[
-		// LESS/CSS output
-		/*new ExtractTextPlugin({
-			filename: "css/[name].css"
-		})*/
+		miniCSS
 	],
 
 	// Enables dev server to be accessed by computers in local network

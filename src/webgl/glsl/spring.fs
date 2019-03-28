@@ -7,8 +7,8 @@ uniform vec2 mouseNow;
 uniform sampler2D heightmap;
 
 #define MASS 1.0
+#define TENSION 3.0
 #define DAMPING 10.0
-#define SPRING_CONSTANT 3.0
 #define TIME_DELTA 0.03
 #define IMG_RATIO vec2(3.0, 4.0)
 
@@ -51,7 +51,7 @@ vec3 mouseInfluence(vec2 uv, vec2 posStart, vec2 posNow) {
 
 vec4 hookesLaw(vec2 springAnchor, vec2 springPos, vec2 springVel, float springyness) {
     vec2 displ = springPos - springAnchor;
-    vec2 tensionF = -SPRING_CONSTANT * springyness * displ;
+    vec2 tensionF = -TENSION * springyness * displ;
     vec2 dampingF = DAMPING * springVel;
     vec2 finalF = tensionF - dampingF;
     vec2 accel = finalF / MASS;

@@ -4,6 +4,7 @@
  * API layer communicating between HTML and View.
  */
 
+import "./less/main.less";
 import View from "./webgl/View";
 import { shuffle, mod } from "./utils";
 
