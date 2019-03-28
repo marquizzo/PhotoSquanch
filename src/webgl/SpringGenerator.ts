@@ -19,7 +19,7 @@ export default class SpringGenerator {
     private springCam: THREE.Camera;
     private uniHeightMap: THREE.IUniform;
     private uniTimeDelta: THREE.IUniform;
-    private uniMouseSize: THREE.IUniform;
+    private uniBrushSize: THREE.IUniform;
 
     // Dev variables
     private devMode: boolean;
@@ -61,7 +61,7 @@ export default class SpringGenerator {
             uniforms: {
                 mouseStart: {value: mouseStart},
                 mouseNow: {value: mouseNow},
-                mouseSize: {value: 30.0},
+                brushSize: {value: 30.0},
                 heightmap: {value: null},
                 timeDelta: {value: 0}
             },
@@ -75,7 +75,7 @@ export default class SpringGenerator {
         });
         this.uniHeightMap = springMat.uniforms.heightmap;
         this.uniTimeDelta = springMat.uniforms.timeDelta;
-        this.uniMouseSize = springMat.uniforms.mouseSize;
+        this.uniBrushSize = springMat.uniforms.brushSize;
 
         const springMesh = new THREE.Mesh(springGeom, springMat);
         this.springScene.add(springMesh);
@@ -98,7 +98,7 @@ export default class SpringGenerator {
     }
 
     public setMouseSize(newSize: number):void {
-        this.uniMouseSize.value = newSize;
+        this.uniBrushSize.value = newSize;
     }
 
     public update(deltaTime: number): THREE.Texture {
