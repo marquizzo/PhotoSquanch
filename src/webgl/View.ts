@@ -31,7 +31,7 @@ export default class PhotoView {
         this.fpsCap = false;
         this.autoBrush = true;
         this.photoScale = 0.5;
-        SUBDIVS.set(3 * 32, 4 * 32);
+        SUBDIVS.set(3 * 16, 4 * 16);
 
         // Three.js boilerplate
         this.scene = new THREE.Scene();
@@ -135,7 +135,7 @@ export default class PhotoView {
     private update = (_t): void => {
         if (this.rendering && !this.fpsCap) {
             this.clock.update(_t);
-            this.springTex = this.springGen.update(this.clock.delta);
+            this.springTex = this.springGen.update();
             this.photo.update(this.clock.nowTime, this.springTex);
 
             this.renderer.setRenderTarget(null);
