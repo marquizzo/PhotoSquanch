@@ -1,7 +1,7 @@
 precision highp float;
 precision highp int;
 
-uniform float mouseSize;
+uniform float brushSize;
 uniform float timeDelta;
 uniform vec2 mouseStart;
 uniform vec2 mouseNow;
@@ -29,8 +29,8 @@ vec3 mouseInfluence(vec2 uv, vec2 posStart, vec2 posNow) {
     // Get dist between start and this cells
     float distFromStart = length(uvCell - posStartCell);
 
-    // Clamp distance influence by mouseSize from [0, 1]
-    float influence = normFloat(distFromStart, mouseSize, 0.0);
+    // Clamp distance influence by brushSize from [0, 1]
+    float influence = normFloat(distFromStart, brushSize, 0.0);
 
     // Apply smooth falloff
     influence = smoothstep(0.0, 1.0, influence) * 0.9 + 0.1;

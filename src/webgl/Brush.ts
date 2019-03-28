@@ -1,26 +1,28 @@
 import * as THREE from "three";
+import { normalize } from "../utils/";
+import { VP, SUBDIVS } from "../utils/regionalVars";
 
 export default class Brush {
     // State variables
     private size: number;
-    private down: boolean;
+    private pointerDown: boolean;
     private autoTimer: number;
     private nowPos: THREE.Vector2;
     private startPos: THREE.Vector2;
 
     // Constant attributes
     private reticle: SVGCircleElement;
-    private photoSize: THREE.Vector2;
-    private photoHalf: THREE.Vector2;
+    private halfPhotoSize: THREE.Vector2;
+    private halfVP: THREE.Vector2;
 
-    constructor(svgElem: SVGCircleElement, photoSize: THREE.Vector2) {
+    constructor(svgElem: SVGElement) {
         this.startPos = new THREE.Vector2(-1, -1);
         this.nowPos = new THREE.Vector2(-1, -1);
-        this.down = false;
+        this.pointerDown = false;
         this.size = 20;
-        this.reticle = svgElem;
-        this.photoSize = photoSize;
-        this.photoHalf = this.photoSize.clone().multiplyScalar(0.5);
+        this.reticle = <SVGCircleElement>svgElem.children[0];
+        this.halfVP = new THREE.Vector2(VP.x / 2, VP.y / 2);
+        this.halfPhotoSize = new THREE.Vector2(VP.y * 0.75, VP.y).multiplyScalar(0.25);
 
         this.autoTimer = 0;
     }
@@ -28,8 +30,8 @@ export default class Brush {
     // ******************* PRIVATE METHODS ******************* //
     // Transforms pixel mousePos into UV mousePos
     private setUVPos(posX: number, posY: number, vector: THREE.Vector2): void {
-        vector.x = (posX - this.photoHalf.x) / this.photoSize.x;
-        vector.y = (posY - this.photoHalf.y) / this.photoSize.y;
+        vector.x = normalize(posX, this.halfVP.x + this.halfPhotoSize.x, this.halfVP.x - this.halfPhotoSize.x);
+        vector.y = normalize(posY, this.halfVP.y + this.halfPhotoSize.y, this.halfVP.y - this.halfPhotoSize.y);
     }
 
     private autoBrush(): void {
@@ -41,25 +43,25 @@ export default class Brush {
     public pressDown(posX: number, posY: number): void {
         this.setUVPos(posX, posY, this.startPos);
         this.nowPos.copy(this.startPos);
-        this.down = true;
+        this.pointerDown = true;
     }
 
     public move(posX: number, posY: number): void {
-        if (this.down) {
+        if (this.pointerDown) {
             this.setUVPos(posX, posY, this.nowPos);
             this.reticle.style.opacity = "0";
         } else {
             this.reticle.style.opacity = "1";
         }
 
-        (<any>this.reticle.attributes).cx.value = posX;
-        (<any>this.reticle.attributes).cy.value = posY;
+        this.reticle.setAttribute("cx", posX.toString());
+        this.reticle.setAttribute("cy", posY.toString());
     }
 
     public release(): void {
         this.nowPos.copy(this.startPos);
         this.reticle.style.opacity = "1";
-        this.down = false;
+        this.pointerDown = false;
     }
 
     public outOfBounds(): void {
@@ -67,11 +69,18 @@ export default class Brush {
         this.reticle.style.opacity = "0";
     }
 
-    public scale(delta: number, ySubdivs: number): number {
-        this.size = THREE.Math.clamp(this.size - delta, 5.0, ySubdivs / 2.0);
-        (<any>this.reticle.attributes).r.value = this.size * this.photoSize.y / ySubdivs;
+    public scale(delta: number): number {
+        this.size = THREE.Math.clamp(this.size - delta, 5.0, SUBDIVS.y / 2.0);
+        let radius = this.size * this.halfPhotoSize.y * 2 / SUBDIVS.y;
+        this.reticle.setAttribute("r", radius.toString());
 
         return this.size;
+    }
+
+    public onResize() {
+        this.halfVP.set(VP.x / 2, VP.y / 2);
+        this.halfPhotoSize.set(VP.y * 0.75, VP.y).multiplyScalar(0.25);
+        this.scale(0);
     }
 
     // ******************* GETTERS ******************* //

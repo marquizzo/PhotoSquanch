@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { zTween } from "../utils/";
+import { SUBDIVS } from "../utils/regionalVars";
 
 import vShader from "./glsl/photo.vs";
 import fShader from "./glsl/photo.fs";
@@ -12,13 +13,13 @@ export default class Photo {
     // Uniforms
     private uniMap0: THREE.IUniform;
     private uniMap1: THREE.IUniform;
-    private uniHeight: THREE.IUniform;
     private uniTrans: THREE.IUniform;
+    private uniHeight: THREE.IUniform;
 
-    constructor(subdivs: THREE.Vector2) {
+    constructor() {
         this.texAlternation = 0;
 
-        const geom = new THREE.PlaneBufferGeometry(6, 8, subdivs.x, subdivs.y);
+        const geom = new THREE.PlaneBufferGeometry(7.5, 10, SUBDIVS.x, SUBDIVS.y);
         const material = new THREE.RawShaderMaterial({
             uniforms: {
                 map0: { value: null },
@@ -29,7 +30,8 @@ export default class Photo {
             vertexShader: vShader,
             fragmentShader: fShader,
             transparent: true,
-            side: THREE.DoubleSide
+            side: THREE.DoubleSide,
+            wireframe: true
         });
         this.mesh = new THREE.Mesh(geom, material);
 

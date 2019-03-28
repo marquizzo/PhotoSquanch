@@ -11,6 +11,11 @@ export function randInt(low: number, high: number): number {
     return low + Math.floor(Math.random() * (high - low + 1));
 }
 
+// Normalizes val range from [max, min] to [0, 1]
+export function normalize(val: number, max: number, min: number): number {
+    return (val - min) / (max - min);
+}
+
 // Javascript mod fix
 export function mod(n: number, m: number): number {
     return (n % m + m) % m;
