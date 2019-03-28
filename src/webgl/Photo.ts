@@ -16,9 +16,10 @@ export default class Photo {
     private uniTrans: THREE.IUniform;
 
     constructor(subdivs: THREE.Vector2) {
+        console.log(subdivs);
         this.texAlternation = 0;
 
-        const geom = new THREE.PlaneBufferGeometry(6, 8, subdivs.x, subdivs.y);
+        const geom = new THREE.PlaneBufferGeometry(7.5, 10, subdivs.x, subdivs.y);
         const material = new THREE.RawShaderMaterial({
             uniforms: {
                 map0: { value: null },
@@ -29,7 +30,8 @@ export default class Photo {
             vertexShader: vShader,
             fragmentShader: fShader,
             transparent: true,
-            side: THREE.DoubleSide
+            side: THREE.DoubleSide,
+            wireframe: true
         });
         this.mesh = new THREE.Mesh(geom, material);
 

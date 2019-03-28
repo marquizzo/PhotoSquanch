@@ -11,12 +11,13 @@ export default class PhotoView {
     private brush: Brush;
     private photo: Photo;
     private springGen: SpringGenerator;
+    private svgElem: SVGElement;
 
     // General properties
     private rendering: boolean;
     private fpsCap: boolean;
     private autoBrush: boolean;
-    private vp: THREE.Vector2;
+    private vp: THREE.Vector3;
     private photoSize: THREE.Vector2;
     private subdivs: THREE.Vector2;
     private scene: THREE.Scene;
@@ -24,34 +25,33 @@ export default class PhotoView {
     private renderer: THREE.WebGLRenderer;
     private springTex: THREE.Texture;
 
-    constructor(canvasElem, reticleElem) {
+    constructor(canvasElem: HTMLCanvasElement, svgElem: SVGElement) {
         // General props
         this.rendering = false;
         this.fpsCap = false;
         this.autoBrush = true;
-
-        // Viewport
-        this.vp = new THREE.Vector2(600, 800);
-        // PX area of photo (300, 400)
-        this.photoSize = this.vp.clone().multiplyScalar(0.5);
-        // Subdivisions of photo grid (3 * 16, 4 * 16)
-        this.subdivs = this.photoSize.clone().multiplyScalar(Math.pow(2, 4) / 100);
+        this.subdivs = new THREE.Vector2(3 * 32, 4 * 32);
 
         // Three.js boilerplate
+        this.vp = new THREE.Vector3(
+            window.innerWidth,
+            window.innerHeight,
+            window.innerWidth / window.innerHeight
+        );
         this.scene = new THREE.Scene();
-        this.cam = new THREE.OrthographicCamera(-6, 6, 8, -8, -10, 10);
+        this.cam = new THREE.OrthographicCamera(-1, 1, 10, -10, -10, 10);
         this.renderer = new THREE.WebGLRenderer({
             canvas: canvasElem,
             antialias: false,
             alpha: true,
             stencil: false,
         });
-        this.renderer.setPixelRatio(1);
-        this.renderer.setSize(this.vp.x, this.vp.y);
+        this.svgElem = svgElem;
 
         // Main classes
+        this.photoSize = new THREE.Vector2(this.vp.x, this.vp.y).multiplyScalar(0.5);
         this.clock = new Clock();
-        this.brush = new Brush(reticleElem, this.photoSize);
+        this.brush = new Brush(svgElem, this.photoSize, this.vp);
         this.springGen = new SpringGenerator(
             this.renderer,
             this.subdivs,
@@ -76,6 +76,7 @@ export default class PhotoView {
         this.onMouseWheel({deltaY: 0});
 
         // Fire up rendering loop
+        this.onResize(window.innerWidth, window.innerHeight);
         this.update(0);
     }
 
@@ -91,6 +92,18 @@ export default class PhotoView {
 
     public resumeRender(): void {
         this.rendering = true;
+    }
+
+    public onResize(vpW: number, vpH: number): void {
+        this.vp.set(vpW, vpH, vpW / vpH);
+        this.renderer.setSize(this.vp.x, this.vp.y);
+        this.svgElem.setAttribute("viewBox", `0 0 ${this.vp.x} ${this.vp.y}`);
+        this.cam.left = -10 * this.vp.z;
+        this.cam.right = 10 * this.vp.z;
+        this.cam.updateProjectionMatrix();
+
+        this.photoSize.set(this.vp.y * 0.75, this.vp.y).multiplyScalar(0.5);
+        this.brush.onResize(this.vp);
     }
 
     // ******************* MOUSE EVENT LISTENERS ******************* //

@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { normalize } from "../utils/";
 
 export default class Brush {
     // State variables
@@ -12,14 +13,16 @@ export default class Brush {
     private reticle: SVGCircleElement;
     private photoSize: THREE.Vector2;
     private photoHalf: THREE.Vector2;
+    private halfVP: THREE.Vector2;
 
-    constructor(svgElem: SVGCircleElement, photoSize: THREE.Vector2) {
+    constructor(svgElem: SVGElement, photoSize: THREE.Vector2, vp: THREE.Vector3) {
         this.startPos = new THREE.Vector2(-1, -1);
         this.nowPos = new THREE.Vector2(-1, -1);
         this.down = false;
         this.size = 20;
-        this.reticle = svgElem;
+        this.reticle = <SVGCircleElement>svgElem.children[0];
         this.photoSize = photoSize;
+        this.halfVP = new THREE.Vector2(vp.x / 2, vp.y / 2);
         this.photoHalf = this.photoSize.clone().multiplyScalar(0.5);
 
         this.autoTimer = 0;
@@ -28,8 +31,8 @@ export default class Brush {
     // ******************* PRIVATE METHODS ******************* //
     // Transforms pixel mousePos into UV mousePos
     private setUVPos(posX: number, posY: number, vector: THREE.Vector2): void {
-        vector.x = (posX - this.photoHalf.x) / this.photoSize.x;
-        vector.y = (posY - this.photoHalf.y) / this.photoSize.y;
+        vector.x = normalize(posX, this.halfVP.x + this.photoHalf.x, this.halfVP.x - this.photoHalf.x);
+        vector.y = normalize(posY, this.halfVP.y + this.photoHalf.y, this.halfVP.y - this.photoHalf.y);
     }
 
     private autoBrush(): void {
@@ -52,8 +55,8 @@ export default class Brush {
             this.reticle.style.opacity = "1";
         }
 
-        (<any>this.reticle.attributes).cx.value = posX;
-        (<any>this.reticle.attributes).cy.value = posY;
+        this.reticle.setAttribute("cx", posX.toString());
+        this.reticle.setAttribute("cy", posY.toString());
     }
 
     public release(): void {
@@ -69,9 +72,15 @@ export default class Brush {
 
     public scale(delta: number, ySubdivs: number): number {
         this.size = THREE.Math.clamp(this.size - delta, 5.0, ySubdivs / 2.0);
-        (<any>this.reticle.attributes).r.value = this.size * this.photoSize.y / ySubdivs;
+        let radius = this.size * this.photoSize.y / ySubdivs;
+        this.reticle.setAttribute("r", radius.toString());
 
         return this.size;
+    }
+
+    public onResize(vp: THREE.Vector3) {
+        this.halfVP.set(vp.x / 2, vp.y / 2);
+        this.photoHalf.set(vp.y * 0.75, vp.y).multiplyScalar(0.25);
     }
 
     // ******************* GETTERS ******************* //

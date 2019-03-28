@@ -13,10 +13,10 @@ class App {
     private imgIndex: number;
 
     constructor() {
-        const canvasBox = document.getElementById("photo-canvas");
-        const reticleRef = document.getElementById("photo-reticle");
+        const canvasBox = <HTMLCanvasElement>document.getElementById("photo-canvas");
+        const svgRef: SVGElement = <any>document.getElementById("photo-svg");
 
-        this.view = new View(canvasBox, reticleRef);
+        this.view = new View(canvasBox, svgRef);
         this.allImages = shuffle([
             "img/cap.jpg",
             "img/hulk.jpg",
@@ -32,10 +32,10 @@ class App {
         //     .addEventListener("click", this.showPrevImage.bind(this));
         // document.getElementById("photo-next")
         //     .addEventListener("click", this.showNextImage.bind(this));
+        window.addEventListener("resize", this.onResize);
     }
 
     // ******************* View API ******************* //
-
     // Loads image in URL
     private loadImage(url: string): void {
         this.view.loadImage(url);
@@ -51,6 +51,10 @@ class App {
     private showNextImage(): void {
         this.imgIndex = (this.imgIndex + 1) % this.allImages.length;
         this.loadImage(this.allImages[this.imgIndex]);
+    }
+
+    private onResize = () => {
+        this.view.onResize(window.innerWidth, window.innerHeight);
     }
 }
 
