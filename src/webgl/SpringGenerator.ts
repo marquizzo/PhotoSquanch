@@ -1,11 +1,11 @@
 import * as THREE from "three";
+import { SUBDIVS } from "../utils/regionalVars";
 
 import springVert from "./glsl/spring.vs";
 import springFrag from "./glsl/spring.fs";
 
 export default class SpringGenerator {
     // General properties
-    private subdivs: THREE.Vector2;
     private renderer: THREE.WebGLRenderer;
     private ogSize: THREE.Vector2;
     private targetSwap: boolean;
@@ -27,16 +27,15 @@ export default class SpringGenerator {
     private devCam: THREE.Camera;
     private devMat: THREE.MeshBasicMaterial;
 
-    constructor(renderer: THREE.WebGLRenderer, subdivs: THREE.Vector2, mouseStart: THREE.Vector2, mouseNow: THREE.Vector2) {
+    constructor(renderer: THREE.WebGLRenderer, mouseStart: THREE.Vector2, mouseNow: THREE.Vector2) {
         this.devMode = false;
         this.targetSwap = false;
-        this.subdivs = subdivs;
         this.renderer = renderer;
         this.ogSize = new THREE.Vector2;
         renderer.getSize(this.ogSize);
 
         // Init render targets
-        this.rTarget1 = new THREE.WebGLRenderTarget(this.subdivs.x, this.subdivs.y, {
+        this.rTarget1 = new THREE.WebGLRenderTarget(SUBDIVS.x, SUBDIVS.y, {
             minFilter: THREE.LinearFilter,
             magFilter: THREE.LinearFilter,
             stencilBuffer: false,
@@ -55,7 +54,7 @@ export default class SpringGenerator {
         this.springCam = new THREE.Camera();
         this.springCam.position.z = 1;
 
-        const rezString = `vec2( ${this.subdivs.x.toFixed(1)}, ${this.subdivs.y.toFixed(1)} )`;
+        const rezString = `vec2( ${SUBDIVS.x.toFixed(1)}, ${SUBDIVS.y.toFixed(1)} )`;
         const springGeom = new THREE.PlaneBufferGeometry(2, 2);
         const springMat = new THREE.RawShaderMaterial({
             uniforms: {
@@ -66,7 +65,7 @@ export default class SpringGenerator {
                 timeDelta: {value: 0}
             },
             defines: {
-                BOUNDS: this.subdivs.x.toFixed(1),
+                BOUNDS: SUBDIVS.x.toFixed(1),
                 RESOLUTION: rezString
             },
             vertexShader: springVert,
@@ -119,7 +118,7 @@ export default class SpringGenerator {
 
         if (this.devMode) {
             this.devMat.map = this.rTargetActive.texture;
-            this.renderer.setViewport(0, 0, this.subdivs.x * 2.0, this.subdivs.y * 2.0);
+            this.renderer.setViewport(0, 0, SUBDIVS.x * 2.0, SUBDIVS.y * 2.0);
             this.renderer.render(this.devScene, this.devCam);
             this.renderer.setViewport(0, 0, this.ogSize.x, this.ogSize.y);
         }

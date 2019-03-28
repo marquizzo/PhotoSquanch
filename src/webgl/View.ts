@@ -4,7 +4,7 @@ import Photo from "./Photo";
 import SpringGenerator from "./SpringGenerator";
 import Brush from "./Brush";
 import { Clock } from "../utils";
-import { VP } from "../utils/regionalVars";
+import { VP, SUBDIVS } from "../utils/regionalVars";
 
 export default class PhotoView {
     // Main classes
@@ -20,7 +20,6 @@ export default class PhotoView {
     private autoBrush: boolean;
     private photoScale: number;
     private photoSize: THREE.Vector2;
-    private subdivs: THREE.Vector2;
     private scene: THREE.Scene;
     private cam: THREE.OrthographicCamera;
     private renderer: THREE.WebGLRenderer;
@@ -32,7 +31,7 @@ export default class PhotoView {
         this.fpsCap = false;
         this.autoBrush = true;
         this.photoScale = 0.5;
-        this.subdivs = new THREE.Vector2(3 * 32, 4 * 32);
+        SUBDIVS.set(3 * 32, 4 * 32);
 
         // Three.js boilerplate
         this.scene = new THREE.Scene();
@@ -51,11 +50,10 @@ export default class PhotoView {
         this.brush = new Brush(svgElem);
         this.springGen = new SpringGenerator(
             this.renderer,
-            this.subdivs,
             this.brush.getStartPos(),
             this.brush.getNowPos()
         );
-        this.photo = new Photo(this.subdivs);
+        this.photo = new Photo();
         this.scene.add(this.photo.getMesh());
 
         // Start drag
@@ -70,7 +68,6 @@ export default class PhotoView {
         canvasElem.addEventListener("mouseout", this.onMouseOut);
         // Mouse wheel
         canvasElem.addEventListener("wheel", this.onMouseWheel);
-        this.onMouseWheel({deltaY: 0});
 
         // Fire up rendering loop
         this.onResize(window.innerWidth, window.innerHeight);
@@ -129,8 +126,8 @@ export default class PhotoView {
         event.preventDefault();
     }
 
-    private onMouseWheel = (event): void => {
-        let bSize = this.brush.scale(event.deltaY * 0.3, this.subdivs.y);
+    private onMouseWheel = (event: WheelEvent): void => {
+        let bSize = this.brush.scale(-event.deltaY * Math.pow(10, event.deltaMode) * 0.3);
         this.springGen.setMouseSize(bSize);
     }
 

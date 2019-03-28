@@ -1,11 +1,11 @@
 import * as THREE from "three";
 import { normalize } from "../utils/";
-import { VP } from "../utils/regionalVars";
+import { VP, SUBDIVS } from "../utils/regionalVars";
 
 export default class Brush {
     // State variables
     private size: number;
-    private down: boolean;
+    private pointerDown: boolean;
     private autoTimer: number;
     private nowPos: THREE.Vector2;
     private startPos: THREE.Vector2;
@@ -18,7 +18,7 @@ export default class Brush {
     constructor(svgElem: SVGElement) {
         this.startPos = new THREE.Vector2(-1, -1);
         this.nowPos = new THREE.Vector2(-1, -1);
-        this.down = false;
+        this.pointerDown = false;
         this.size = 20;
         this.reticle = <SVGCircleElement>svgElem.children[0];
         this.halfVP = new THREE.Vector2(VP.x / 2, VP.y / 2);
@@ -43,11 +43,11 @@ export default class Brush {
     public pressDown(posX: number, posY: number): void {
         this.setUVPos(posX, posY, this.startPos);
         this.nowPos.copy(this.startPos);
-        this.down = true;
+        this.pointerDown = true;
     }
 
     public move(posX: number, posY: number): void {
-        if (this.down) {
+        if (this.pointerDown) {
             this.setUVPos(posX, posY, this.nowPos);
             this.reticle.style.opacity = "0";
         } else {
@@ -61,7 +61,7 @@ export default class Brush {
     public release(): void {
         this.nowPos.copy(this.startPos);
         this.reticle.style.opacity = "1";
-        this.down = false;
+        this.pointerDown = false;
     }
 
     public outOfBounds(): void {
@@ -69,9 +69,9 @@ export default class Brush {
         this.reticle.style.opacity = "0";
     }
 
-    public scale(delta: number, ySubdivs: number): number {
-        this.size = THREE.Math.clamp(this.size - delta, 5.0, ySubdivs / 2.0);
-        let radius = this.size * this.halfPhotoSize.y * 2 / ySubdivs;
+    public scale(delta: number): number {
+        this.size = THREE.Math.clamp(this.size - delta, 5.0, SUBDIVS.y / 2.0);
+        let radius = this.size * this.halfPhotoSize.y * 2 / SUBDIVS.y;
         this.reticle.setAttribute("r", radius.toString());
 
         return this.size;
@@ -80,6 +80,7 @@ export default class Brush {
     public onResize() {
         this.halfVP.set(VP.x / 2, VP.y / 2);
         this.halfPhotoSize.set(VP.y * 0.75, VP.y).multiplyScalar(0.25);
+        this.scale(0);
     }
 
     // ******************* GETTERS ******************* //
