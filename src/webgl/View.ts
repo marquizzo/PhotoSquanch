@@ -75,6 +75,10 @@ export default class PhotoView {
     }
 
     // ******************* PUBLIC METHODS ******************* //
+    public changeFalloff(falloffIndex: number): void {
+        this.springGen.setFalloffMode(falloffIndex);
+    }
+
     public toggleLock(enable: boolean): void {
         this.brush.setLock(enable);
     }

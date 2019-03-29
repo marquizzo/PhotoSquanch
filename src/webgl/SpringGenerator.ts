@@ -18,6 +18,7 @@ export default class SpringGenerator {
     private springCam: THREE.Camera;
     private uniHeightMap: THREE.IUniform;
     private uniBrushSize: THREE.IUniform;
+    private uniFalloff: THREE.IUniform;
 
     // Dev variables
     private devMode: boolean = false;
@@ -56,7 +57,8 @@ export default class SpringGenerator {
                 mouseStart: {value: mouseStart},
                 mouseNow: {value: mouseNow},
                 brushSize: {value: 30.0},
-                heightmap: {value: null}
+                heightmap: {value: null},
+                falloffMode: {value: 0.0}
             },
             defines: {
                 BOUNDS: SUBDIVS.x.toFixed(1),
@@ -66,8 +68,10 @@ export default class SpringGenerator {
             fragmentShader: springFrag,
             depthWrite: false,
         });
-        this.uniHeightMap = springMat.uniforms.heightmap;
-        this.uniBrushSize = springMat.uniforms.brushSize;
+        const unis = springMat.uniforms;
+        this.uniHeightMap = unis.heightmap;
+        this.uniBrushSize = unis.brushSize;
+        this.uniFalloff = unis.falloffMode;
 
         const springMesh = new THREE.Mesh(springGeom, springMat);
         this.springScene.add(springMesh);
@@ -89,8 +93,13 @@ export default class SpringGenerator {
         return (/(iPad|iPhone|iPod)/g).test(navigator.userAgent) ? THREE.HalfFloatType : THREE.FloatType;
     }
 
+    // ******************* PUBLIC METHODS ******************* //
     public setMouseSize(newSize: number):void {
         this.uniBrushSize.value = newSize;
+    }
+
+    public setFalloffMode(falloffIndex: number): void {
+        this.uniFalloff.value = falloffIndex;
     }
 
     public update(): THREE.Texture {

@@ -2,6 +2,7 @@ precision highp float;
 precision highp int;
 
 uniform float brushSize;
+uniform float falloffMode;
 uniform vec2 mouseStart;
 uniform vec2 mouseNow;
 uniform sampler2D heightmap;
@@ -29,14 +30,20 @@ vec3 mouseInfluence(vec2 uv, vec2 posStart, vec2 posNow) {
     // Clamp distance influence by brushSize from [0, 1]
     float influence = normFloat(distFromStart, brushSize, 0.0);
 
-    // Smooth falloff
-    influence = smoothstep(0.0, 1.0, influence);
-    // Linear falloff
-    // influence = normFloat(influence, 0.0, 1.0);
-    // Circle falloff
-    // influence = sqrt(influence);
-    // Peak falloff
-    // influence = influence * influence;
+    // Change influence by falloff mode
+    if (falloffMode < 0.5) {
+        // Smooth
+        influence = smoothstep(0.0, 1.0, influence);
+    } else if(falloffMode < 1.5) {
+        // Linear
+        influence = normFloat(influence, 0.0, 1.0);
+    } else if (falloffMode < 2.5) {
+        // Circle
+        influence = sqrt(influence);
+    } else if (falloffMode < 3.5) {
+        // Peak
+        influence = influence * influence;        
+    }
 
     // slight influence to remaining cells
     influence = (influence * 0.9 + 0.1) * 2.0;

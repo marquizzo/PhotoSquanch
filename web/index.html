@@ -24,18 +24,35 @@
     <h1>Brush</h1>
     <article>
       <h2>Size</h2>
-      <div class="slider">
+      <div class="slider" id="slider-size">
         <div class="slider-prog"></div>
       </div>
+      <p>[Also mousewheel up/down]</p>
     </article>
 
     <article>
       <h2>Falloff</h2>
       <div class="btn-row">
-        <div class="btn-single"></div>
-        <div class="btn-single active"></div>
-        <div class="btn-single"></div>
-        <div class="btn-single"></div>
+        <div class="btn-single btn-falloff active">
+          <svg viewBox="-25 -15 100 60">
+            <path id="Smooth" class="svg-line" d="M5,25C15,25,15,5,25,5s10,20,20,20"/>
+          </svg>
+        </div>
+        <div class="btn-single btn-falloff">
+          <svg viewBox="-25 -15 100 60">
+            <polyline id="Linear" class="svg-line" points="5,25 25,5 45,25 "/>
+          </svg>
+        </div>
+        <div class="btn-single btn-falloff">
+          <svg viewBox="-25 -15 100 60">
+            <path id="Circle" class="svg-line" d="M5,25C5,14,14,5,25,5s20,9,20,20"/>
+          </svg>
+        </div>
+        <div class="btn-single btn-falloff">
+          <svg viewBox="-25 -15 100 60">
+            <path id="Peak" class="svg-line" d="M5,25c10,0,20-15,20-20c0,5,10,20,20,20"/>
+          </svg>
+        </div>
       </div>
     </article>
 
@@ -56,7 +73,6 @@
   <section>
     <h1>Image</h1>
     <article>
-      <h2>Change</h2>
       <div class="btn-row">
         <div class="btn-single" id="img-prev">Prev</div>
         <div class="btn-single" id="img-next">Next</div>
@@ -64,6 +80,7 @@
     </article>
   </section>
 </nav>
+
 
 <!-- Magical goodness --> 
 <script src="js/photoSquanch.js"></script>
