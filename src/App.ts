@@ -15,7 +15,9 @@ class App {
 
     // UI Elements
     // Brush
-    private sliderSize: HTMLElement;
+    private brushSizeActive: boolean = false;
+    private brushSizePct: number = 50;
+    private brushSizeElem: HTMLElement;
     private btnsFalloff: HTMLCollectionOf<HTMLElement>;
     private switchLock: HTMLElement;
     private switchWire: HTMLElement;
@@ -43,19 +45,28 @@ class App {
 
     }
     private addEventListeners(): void {
-        // Brush section
-        this.sliderSize = document.getElementById("slider-size");
+        // Brush selectors
+        this.brushSizeElem = document.getElementById("slider-size");
         this.btnsFalloff = <any>document.getElementsByClassName("btn-falloff");
         this.switchLock = document.getElementById("switch-lock");
         this.switchWire = document.getElementById("switch-wire");
-        this.sliderSize.addEventListener("mousedown", this.brushSlider);
-        this.sliderSize.addEventListener("mousemove", this.brushSlider);
-        this.sliderSize.addEventListener("mouseup", this.brushSlider);
+
+        // Brush event listeners
+        const bSE = this.brushSizeElem;
+        bSE.addEventListener("mousedown", this.brushSizeDown);
+        bSE.addEventListener("touchstart", this.brushSizeDown);
+        bSE.addEventListener("mousemove", this.brushSizeMove);
+        bSE.addEventListener("touchmove", this.brushSizeMove);
+        bSE.addEventListener("mouseup", this.brushSizeUp);
+        bSE.addEventListener("mouseout", this.brushSizeUp);
+        bSE.addEventListener("touchend", this.brushSizeUp);
         for (let i = 0; i < this.btnsFalloff.length; i++) {
             this.btnsFalloff[i].addEventListener("click", () => this.brushFalloff(i));
         }
         this.switchLock.addEventListener("click", this.toggleLock);
         this.switchWire.addEventListener("click", this.toggleWire);
+        // Mouse wheel
+        window.addEventListener("wheel", this.onMouseWheel);
 
         // Image section
         this.imgPrev = document.getElementById("img-prev");
@@ -66,9 +77,34 @@ class App {
         window.addEventListener("resize", this.onResize);        
     }
 
-    // ******************* View API ******************* //
-    private brushSlider = (event: MouseEvent): void => {
-        console.log(event);
+    // ******************* BRUSH CONTROLS ******************* //
+
+    private onMouseWheel = (event: WheelEvent): void => {
+        this.brushSizePct -= event.deltaY * Math.pow(10, event.deltaMode) * 0.3;
+        this.brushSizePct = Math.max(0, Math.min(100, this.brushSizePct));
+        this.updateBrushSizeSlider();
+    }
+
+    private brushSizeDown = (event: MouseEvent): void => {
+        this.brushSizeActive = true;
+        this.brushSizePct = event.layerX / 2;
+        this.updateBrushSizeSlider();
+    }
+
+    private brushSizeMove = (event: MouseEvent): void => {
+        if (this.brushSizeActive) {
+            this.brushSizePct = event.layerX / 2;
+            this.updateBrushSizeSlider();
+        }
+    }
+
+    private brushSizeUp = (event: MouseEvent): void => {
+        this.brushSizeActive = false;
+    }
+
+    private updateBrushSizeSlider(): void {
+        (<HTMLElement>this.brushSizeElem.children[0]).style.width = `${this.brushSizePct}%`;
+        this.view.changeBrushSizeTo(this.brushSizePct / 100);
     }
 
     private brushFalloff = (index: number): void => {
@@ -102,6 +138,7 @@ class App {
         }
     }
 
+    // ******************* IMAGE CONTROLS ******************* //
     // Loads image in URL
     private loadImage(url: string): void {
         this.view.loadImage(url);

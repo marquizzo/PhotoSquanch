@@ -66,6 +66,8 @@ p {
         width: 30%;
         height: 100%;
         background: @color-blue;
+        pointer-events: none;
+        transition: width 0.3s ease-out;
     }
 }
 
@@ -86,6 +88,7 @@ p {
         cursor: pointer;
         text-align: center;
         line-height: 30px;
+        transition: background 0.3s ease-out;
         .svg-line{
             fill:none;
             stroke: @color-white1;

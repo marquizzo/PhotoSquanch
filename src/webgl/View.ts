@@ -50,8 +50,7 @@ export default class PhotoView {
         this.brush = new Brush(svgElem);
         this.springGen = new SpringGenerator(
             this.renderer,
-            this.brush.getStartPos(),
-            this.brush.getNowPos()
+            this.brush
         );
         this.photo = new Photo();
         this.scene.add(this.photo.getMesh());
@@ -66,8 +65,6 @@ export default class PhotoView {
         canvasElem.addEventListener("mouseup", this.onMouseUp);
         canvasElem.addEventListener("touchend", this.onMouseUp);
         canvasElem.addEventListener("mouseout", this.onMouseOut);
-        // Mouse wheel
-        canvasElem.addEventListener("wheel", this.onMouseWheel);
 
         // Fire up rendering loop
         this.onResize(window.innerWidth, window.innerHeight);
@@ -77,6 +74,10 @@ export default class PhotoView {
     // ******************* PUBLIC METHODS ******************* //
     public changeFalloff(falloffIndex: number): void {
         this.springGen.setFalloffMode(falloffIndex);
+    }
+
+    public changeBrushSizeTo(pct: number): void {
+        this.brush.scaleTo(pct);
     }
 
     public toggleLock(enable: boolean): void {
@@ -138,16 +139,11 @@ export default class PhotoView {
         event.preventDefault();
     }
 
-    private onMouseWheel = (event: WheelEvent): void => {
-        let bSize = this.brush.scale(-event.deltaY * Math.pow(10, event.deltaMode) * 0.3);
-        this.springGen.setMouseSize(bSize);
-    }
-
     // ******************* UPDATE ******************* //
     private update = (_t): void => {
         if (this.rendering && !this.fpsCap) {
             this.clock.update(_t);
-            this.springTex = this.springGen.update();
+            this.springTex = this.springGen.update(this.brush);
             this.photo.update(this.clock.nowTime, this.springTex);
 
             this.renderer.setRenderTarget(null);

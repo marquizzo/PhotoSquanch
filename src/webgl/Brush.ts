@@ -4,10 +4,10 @@ import { VP, SUBDIVS } from "../utils/regionalVars";
 
 export default class Brush {
     // State variables
-    private size: number;
-    private pointerDown: boolean;
-    private autoTimer: number;
+    private size: number = 5;
+    private autoTimer: number = 0;
     private locked: boolean = false;
+    private pointerDown: boolean = false;
     private nowPos: THREE.Vector2;
     private startPos: THREE.Vector2;
 
@@ -15,17 +15,16 @@ export default class Brush {
     private reticle: SVGCircleElement;
     private halfPhotoSize: THREE.Vector2;
     private halfVP: THREE.Vector2;
+    private sizeRange: {min: number, max: number};
 
     constructor(svgElem: SVGElement) {
         this.startPos = new THREE.Vector2(-1, -1);
         this.nowPos = new THREE.Vector2(-1, -1);
-        this.pointerDown = false;
-        this.size = 20;
-        this.reticle = <SVGCircleElement>svgElem.children[0];
-        this.halfVP = new THREE.Vector2(VP.x / 2, VP.y / 2);
-        this.halfPhotoSize = new THREE.Vector2(VP.y * 0.75, VP.y).multiplyScalar(0.25);
 
-        this.autoTimer = 0;
+        this.reticle = <SVGCircleElement>svgElem.children[0];
+        this.halfPhotoSize = new THREE.Vector2(VP.y * 0.75, VP.y).multiplyScalar(0.25);
+        this.halfVP = new THREE.Vector2(VP.x / 2, VP.y / 2);
+        this.sizeRange = {min: 5, max: SUBDIVS.y / 2.0};
     }
 
     // ******************* PRIVATE METHODS ******************* //
@@ -38,6 +37,11 @@ export default class Brush {
     private autoBrush(): void {
         this.pressDown(THREE.Math.randInt(150, 450), THREE.Math.randInt(200, 600));
         this.move(THREE.Math.randInt(150, 450), THREE.Math.randInt(200, 600));
+    }
+
+    private resizeReticle(): void {
+        let pxRadius = this.size * this.halfPhotoSize.y / this.sizeRange.max;
+        this.reticle.setAttribute("r", pxRadius.toString());
     }
 
     // ******************* MOUSE/TOUCH EVENTS ******************* //
@@ -72,18 +76,16 @@ export default class Brush {
         this.reticle.style.opacity = "0";
     }
 
-    public scale(delta: number): number {
-        this.size = THREE.Math.clamp(this.size - delta, 5.0, SUBDIVS.y / 2.0);
-        let radius = this.size * this.halfPhotoSize.y * 2 / SUBDIVS.y;
-        this.reticle.setAttribute("r", radius.toString());
-
-        return this.size;
+    // ******************* SCALING EVENTS ******************* //
+    public scaleTo(pct: number): void {
+        this.size = (this.sizeRange.max - this.sizeRange.min) * pct + this.sizeRange.min;
+        this.resizeReticle();
     }
 
     public onResize() {
         this.halfVP.set(VP.x / 2, VP.y / 2);
         this.halfPhotoSize.set(VP.y * 0.75, VP.y).multiplyScalar(0.25);
-        this.scale(0);
+        this.resizeReticle();
     }
 
     // ******************* GETTERS / SETTERS ******************* //
@@ -93,6 +95,10 @@ export default class Brush {
 
     public getNowPos(): THREE.Vector2 {
         return this.nowPos;
+    }
+
+    public getSize(): number {
+        return this.size;
     }
 
     public setLock(value: boolean): void {

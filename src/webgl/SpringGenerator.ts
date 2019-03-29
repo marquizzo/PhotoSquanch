@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import Brush from "./Brush";
 import { VP, SUBDIVS } from "../utils/regionalVars";
 
 import springVert from "./glsl/spring.vs";
@@ -26,7 +27,7 @@ export default class SpringGenerator {
     private devCam: THREE.Camera;
     private devMat: THREE.MeshBasicMaterial;
 
-    constructor(renderer: THREE.WebGLRenderer, mouseStart: THREE.Vector2, mouseNow: THREE.Vector2) {
+    constructor(renderer: THREE.WebGLRenderer, brush: Brush) {
         this.targetSwap = false;
         this.renderer = renderer;
 
@@ -54,9 +55,9 @@ export default class SpringGenerator {
         const springGeom = new THREE.PlaneBufferGeometry(2, 2);
         const springMat = new THREE.RawShaderMaterial({
             uniforms: {
-                mouseStart: {value: mouseStart},
-                mouseNow: {value: mouseNow},
-                brushSize: {value: 30.0},
+                mouseStart: {value: brush.getStartPos()},
+                mouseNow: {value: brush.getNowPos()},
+                brushSize: {value: brush.getSize()},
                 heightmap: {value: null},
                 falloffMode: {value: 0.0}
             },
@@ -94,15 +95,11 @@ export default class SpringGenerator {
     }
 
     // ******************* PUBLIC METHODS ******************* //
-    public setMouseSize(newSize: number):void {
-        this.uniBrushSize.value = newSize;
-    }
-
     public setFalloffMode(falloffIndex: number): void {
         this.uniFalloff.value = falloffIndex;
     }
 
-    public update(): THREE.Texture {
+    public update(brush: Brush): THREE.Texture {
         this.targetSwap = !this.targetSwap;
 
         if (this.targetSwap) {
@@ -112,7 +109,7 @@ export default class SpringGenerator {
             this.rTargetActive = this.rTarget2;
             this.rTargetInactive = this.rTarget1;
         }
-
+        this.uniBrushSize.value = brush.getSize();
         this.uniHeightMap.value = this.rTargetInactive.texture;
         this.renderer.setRenderTarget(this.rTargetActive);
         this.renderer.render(this.springScene, this.springCam);
