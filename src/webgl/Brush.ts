@@ -4,7 +4,7 @@ import { VP, SUBDIVS } from "../utils/regionalVars";
 
 export default class Brush {
     // State variables
-    private size: number = 5;
+    private size: number = 0;
     private autoTimer: number = 0;
     private locked: boolean = false;
     private pointerDown: boolean = false;

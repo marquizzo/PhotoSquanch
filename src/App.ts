@@ -6,11 +6,12 @@
 
 import "./less/main.less";
 import View from "./webgl/View";
+import photos from "./photos";
 import { shuffle, mod } from "./utils";
 
 class App {
     private view: View;
-    private allImages: Array<string>;
+    private photoList: Array<string>;
     private imgIndex: number;
 
     // UI Elements
@@ -31,14 +32,7 @@ class App {
         const svgRef: SVGElement = <any>document.getElementById("photo-svg");
 
         this.view = new View(canvasBox, svgRef);
-        this.allImages = shuffle([
-            "img/cap.jpg",
-            "img/hulk.jpg",
-            "img/ironman.jpg",
-            "img/loki.jpg",
-            "img/spiderman.jpg",
-            "img/thor.jpg"
-        ]);
+        this.photoList = shuffle(photos);
         this.imgIndex = -1;
         this.showNextImage();
         this.addEventListeners();
@@ -49,7 +43,6 @@ class App {
         this.brushSizeElem = document.getElementById("slider-size");
         this.btnsFalloff = <any>document.getElementsByClassName("btn-falloff");
         this.switchLock = document.getElementById("switch-lock");
-        this.switchWire = document.getElementById("switch-wire");
 
         // Brush event listeners
         const bSE = this.brushSizeElem;
@@ -64,17 +57,19 @@ class App {
             this.btnsFalloff[i].addEventListener("click", () => this.brushFalloff(i));
         }
         this.switchLock.addEventListener("click", this.toggleLock);
-        this.switchWire.addEventListener("click", this.toggleWire);
         // Mouse wheel
         window.addEventListener("wheel", this.onMouseWheel);
 
         // Image section
         this.imgPrev = document.getElementById("img-prev");
         this.imgNext = document.getElementById("img-next");
+        this.switchWire = document.getElementById("switch-wire");
         this.imgPrev.addEventListener("click", this.showPrevImage);
         this.imgNext.addEventListener("click", this.showNextImage);
+        this.switchWire.addEventListener("click", this.toggleWire);
 
-        window.addEventListener("resize", this.onResize);        
+        window.addEventListener("resize", this.onResize);
+        this.updateBrushSize();
     }
 
     // ******************* BRUSH CONTROLS ******************* //
@@ -82,19 +77,19 @@ class App {
     private onMouseWheel = (event: WheelEvent): void => {
         this.brushSizePct -= event.deltaY * Math.pow(10, event.deltaMode) * 0.3;
         this.brushSizePct = Math.max(0, Math.min(100, this.brushSizePct));
-        this.updateBrushSizeSlider();
+        this.updateBrushSize();
     }
 
     private brushSizeDown = (event: MouseEvent): void => {
         this.brushSizeActive = true;
         this.brushSizePct = event.layerX / 2;
-        this.updateBrushSizeSlider();
+        this.updateBrushSize();
     }
 
     private brushSizeMove = (event: MouseEvent): void => {
         if (this.brushSizeActive) {
             this.brushSizePct = event.layerX / 2;
-            this.updateBrushSizeSlider();
+            this.updateBrushSize();
         }
     }
 
@@ -102,7 +97,7 @@ class App {
         this.brushSizeActive = false;
     }
 
-    private updateBrushSizeSlider(): void {
+    private updateBrushSize(): void {
         (<HTMLElement>this.brushSizeElem.children[0]).style.width = `${this.brushSizePct}%`;
         this.view.changeBrushSizeTo(this.brushSizePct / 100);
     }
@@ -126,6 +121,25 @@ class App {
             this.view.toggleLock(true);
         }
     }
+
+    // ******************* IMAGE CONTROLS ******************* //
+    // Loads image in URL
+    private loadImage(url: string): void {
+        this.view.loadImage(url);
+    }
+
+    // Goes to previous image
+    private showPrevImage = (): void => {
+        this.imgIndex = mod(this.imgIndex - 1, this.photoList.length);
+        this.loadImage(this.photoList[this.imgIndex]);
+    }
+
+    // Goes to next image
+    private showNextImage = (): void => {
+        this.imgIndex = (this.imgIndex + 1) % this.photoList.length;
+        this.loadImage(this.photoList[this.imgIndex]);
+    }
+
     private toggleWire = (event: MouseEvent): void => {
         const wireEnabled = this.switchWire.classList.contains("active");
 
@@ -136,24 +150,6 @@ class App {
             this.switchWire.classList.add("active");
             this.view.toggleWire(true);
         }
-    }
-
-    // ******************* IMAGE CONTROLS ******************* //
-    // Loads image in URL
-    private loadImage(url: string): void {
-        this.view.loadImage(url);
-    }
-
-    // Goes to previous image
-    private showPrevImage = (): void => {
-        this.imgIndex = mod(this.imgIndex - 1, this.allImages.length);
-        this.loadImage(this.allImages[this.imgIndex]);
-    }
-
-    // Goes to next image
-    private showNextImage = (): void => {
-        this.imgIndex = (this.imgIndex + 1) % this.allImages.length;
-        this.loadImage(this.allImages[this.imgIndex]);
     }
 
     private onResize = () => {
