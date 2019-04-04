@@ -22,7 +22,7 @@ export default class Brush {
         this.nowPos = new THREE.Vector2(-1, -1);
 
         this.reticle = <SVGCircleElement>svgElem.children[0];
-        this.halfPhotoSize = new THREE.Vector2(VP.y * 0.75, VP.y).multiplyScalar(0.25);
+        this.halfPhotoSize = new THREE.Vector2(VP.y * 0.75, VP.y).multiplyScalar(0.375);
         this.halfVP = new THREE.Vector2(VP.x / 2, VP.y / 2);
         this.sizeRange = {min: 5, max: SUBDIVS.y / 2.0};
     }
@@ -84,7 +84,7 @@ export default class Brush {
 
     public onResize() {
         this.halfVP.set(VP.x / 2, VP.y / 2);
-        this.halfPhotoSize.set(VP.y * 0.75, VP.y).multiplyScalar(0.25);
+        this.halfPhotoSize.set(VP.y * 0.75, VP.y).multiplyScalar(0.375);
         this.resizeReticle();
     }
 

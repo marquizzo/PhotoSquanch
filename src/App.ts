@@ -15,6 +15,8 @@ class App {
     private imgIndex: number;
 
     // UI Elements
+    private nav: HTMLElement;
+    private navToggle: HTMLElement;
     // Brush
     private brushSizeActive: boolean = false;
     private brushSizePct: number = 50;
@@ -39,6 +41,9 @@ class App {
 
     }
     private addEventListeners(): void {
+        this.nav = document.getElementById("nav");
+        this.navToggle = document.getElementById("nav-toggle");
+        this.navToggle.addEventListener("click", this.toggleNav);
         // Brush selectors
         this.brushSizeElem = document.getElementById("slider-size");
         this.btnsFalloff = <any>document.getElementsByClassName("btn-falloff");
@@ -73,6 +78,17 @@ class App {
     }
 
     // ******************* BRUSH CONTROLS ******************* //
+
+    private toggleNav = (event: MouseEvent): void => {
+        const active = this.nav.classList.contains("active");
+        if (active) {
+            this.nav.classList.remove("active");
+            this.navToggle.classList.remove("active");
+        } else {
+            this.nav.classList.add("active");
+            this.navToggle.classList.add("active");
+        }
+    }
 
     private onMouseWheel = (event: WheelEvent): void => {
         this.brushSizePct -= event.deltaY * Math.pow(10, event.deltaMode) * 0.3;

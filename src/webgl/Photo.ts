@@ -20,7 +20,7 @@ export default class Photo {
     constructor() {
         this.texAlternation = 0;
 
-        const geom = new THREE.PlaneBufferGeometry(7.5, 10, SUBDIVS.x, SUBDIVS.y);
+        const geom = new THREE.PlaneBufferGeometry(11.25, 15, SUBDIVS.x, SUBDIVS.y);
         this.mat = new THREE.RawShaderMaterial({
             uniforms: {
                 map0: { value: null },

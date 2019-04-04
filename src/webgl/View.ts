@@ -30,7 +30,7 @@ export default class PhotoView {
         this.rendering = false;
         this.fpsCap = false;
         this.autoBrush = false;
-        this.photoScale = 0.5;
+        this.photoScale = 0.75;
         SUBDIVS.set(3 * 32, 4 * 32);
 
         // Three.js boilerplate
@@ -38,7 +38,7 @@ export default class PhotoView {
         this.cam = new THREE.OrthographicCamera(-1, 1, 10, -10, -10, 10);
         this.renderer = new THREE.WebGLRenderer({
             canvas: canvasElem,
-            antialias: false,
+            antialias: true,
             alpha: true,
             stencil: false,
         });
