@@ -7,6 +7,7 @@
 import "./less/main.less";
 import View from "./webgl/View";
 import photos from "./photos";
+import Slider from "./domClasses/Slider";
 import { shuffle, mod } from "./utils";
 
 class App {
@@ -18,16 +19,19 @@ class App {
     private nav: HTMLElement;
     private navToggle: HTMLElement;
     // Brush
-    private brushSizeActive: boolean = false;
-    private brushSizePct: number = 50;
-    private brushSizeElem: HTMLElement;
+    private brushSizeSlider: Slider;
     private btnsFalloff: HTMLCollectionOf<HTMLElement>;
     private switchLock: HTMLElement;
-    private switchWire: HTMLElement;
 
     // Image
     private imgPrev: HTMLElement;
     private imgNext: HTMLElement;
+    private switchWire: HTMLElement;
+
+    // Material
+    private sliderMass: Slider;
+    private sliderTension: Slider;
+    private sliderDamping: Slider;
 
     constructor() {
         const canvasBox = <HTMLCanvasElement>document.getElementById("photo-canvas");
@@ -41,43 +45,42 @@ class App {
 
     }
     private addEventListeners(): void {
-        this.nav = document.getElementById("nav");
-        this.navToggle = document.getElementById("nav-toggle");
+        this.nav = this.getElem("nav");
+        this.navToggle = this.getElem("nav-toggle");
         this.navToggle.addEventListener("click", this.toggleNav);
+
         // Brush selectors
-        this.brushSizeElem = document.getElementById("slider-size");
+        this.brushSizeSlider = new Slider(this.getElem("slider-size"), this.onSizeUpdate);
+        this.brushSizeSlider.forceUpdate(50);
         this.btnsFalloff = <any>document.getElementsByClassName("btn-falloff");
-        this.switchLock = document.getElementById("switch-lock");
+        this.switchLock = this.getElem("switch-lock");
 
         // Brush event listeners
-        const bSE = this.brushSizeElem;
-        bSE.addEventListener("mousedown", this.brushSizeDown);
-        bSE.addEventListener("touchstart", this.brushSizeDown);
-        bSE.addEventListener("mousemove", this.brushSizeMove);
-        bSE.addEventListener("touchmove", this.brushSizeMove);
-        bSE.addEventListener("mouseup", this.brushSizeUp);
-        bSE.addEventListener("mouseout", this.brushSizeUp);
-        bSE.addEventListener("touchend", this.brushSizeUp);
         for (let i = 0; i < this.btnsFalloff.length; i++) {
             this.btnsFalloff[i].addEventListener("click", () => this.brushFalloff(i));
         }
         this.switchLock.addEventListener("click", this.toggleLock);
-        // Mouse wheel
         window.addEventListener("wheel", this.onMouseWheel);
 
         // Image section
-        this.imgPrev = document.getElementById("img-prev");
-        this.imgNext = document.getElementById("img-next");
-        this.switchWire = document.getElementById("switch-wire");
+        this.imgPrev = this.getElem("img-prev");
+        this.imgNext = this.getElem("img-next");
+        this.switchWire = this.getElem("switch-wire");
         this.imgPrev.addEventListener("click", this.showPrevImage);
         this.imgNext.addEventListener("click", this.showNextImage);
         this.switchWire.addEventListener("click", this.toggleWire);
 
+        // Material section
+        this.sliderMass = new Slider(this.getElem("slider-mass"), this.onMassUpdate);
+        this.sliderTension = new Slider(this.getElem("slider-tension"), this.onTensionUpdate);
+        this.sliderDamping = new Slider(this.getElem("slider-damping"), this.onDampingUpdate);
+
         window.addEventListener("resize", this.onResize);
-        this.updateBrushSize();
     }
 
-    // ******************* BRUSH CONTROLS ******************* //
+    private getElem(id: string): HTMLElement {
+        return document.getElementById(id);
+    }
 
     private toggleNav = (event: MouseEvent): void => {
         const active = this.nav.classList.contains("active");
@@ -90,32 +93,15 @@ class App {
         }
     }
 
+    // ******************* BRUSH CONTROLS ******************* //
     private onMouseWheel = (event: WheelEvent): void => {
-        this.brushSizePct -= event.deltaY * Math.pow(10, event.deltaMode) * 0.3;
-        this.brushSizePct = Math.max(0, Math.min(100, this.brushSizePct));
-        this.updateBrushSize();
+        // this.brushSizePct -= event.deltaY * Math.pow(10, event.deltaMode) * 0.3;
+        // this.brushSizePct = Math.max(0, Math.min(100, this.brushSizePct));
+        // this.updateBrushSize();
     }
 
-    private brushSizeDown = (event: MouseEvent): void => {
-        this.brushSizeActive = true;
-        this.brushSizePct = event.layerX / 2;
-        this.updateBrushSize();
-    }
-
-    private brushSizeMove = (event: MouseEvent): void => {
-        if (this.brushSizeActive) {
-            this.brushSizePct = event.layerX / 2;
-            this.updateBrushSize();
-        }
-    }
-
-    private brushSizeUp = (event: MouseEvent): void => {
-        this.brushSizeActive = false;
-    }
-
-    private updateBrushSize(): void {
-        (<HTMLElement>this.brushSizeElem.children[0]).style.width = `${this.brushSizePct}%`;
-        this.view.changeBrushSizeTo(this.brushSizePct / 100);
+    private onSizeUpdate = (newPct: number): void => {
+        this.view.changeBrushSizeTo(newPct);
     }
 
     private brushFalloff = (index: number): void => {
@@ -166,6 +152,17 @@ class App {
             this.switchWire.classList.add("active");
             this.view.toggleWire(true);
         }
+    }
+
+    // ******************* MATERIAL CONTROLS ******************* //
+    private onMassUpdate(newPct: number): void {
+
+    }
+    private onTensionUpdate(newPct: number): void {
+
+    }
+    private onDampingUpdate(newPct: number): void {
+
     }
 
     private onResize = () => {
