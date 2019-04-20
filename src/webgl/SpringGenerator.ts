@@ -28,7 +28,7 @@ export default class SpringGenerator {
 
     // Mass ranges
     private rangeMass: Array<number> = [1.0, 5.0];
-    private rangeTension: Array<number> = [3.0, 6.0];
+    private rangeTension: Array<number> = [1.0, 10.0];
     private rangeDamping: Array<number> = [5.0, 20.0];
 
     // Dev variables
@@ -116,16 +116,16 @@ export default class SpringGenerator {
     }
 
     public setMass(newMass: number): void {
-        this.uniMass.value = newMass;
+        this.uniMass.value = (this.rangeMass[1] - this.rangeMass[0]) * newMass + this.rangeMass[0];
     }
 
     public setTension(newTension: number): void {
-        this.uniTension.value = newTension;
-
+        this.uniTension.value = (this.rangeTension[1] - this.rangeTension[0]) * newTension + this.rangeTension[0];
     }
 
     public setDamping(newDamping: number): void {
-        this.uniDamping.value = newDamping;
+        console.log(newDamping);
+        this.uniDamping.value = (this.rangeDamping[1] - this.rangeDamping[0]) * newDamping + this.rangeDamping[0];
     }
 
     public update(brush: Brush): THREE.Texture {

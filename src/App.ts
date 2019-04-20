@@ -155,14 +155,16 @@ class App {
     }
 
     // ******************* MATERIAL CONTROLS ******************* //
-    private onMassUpdate(newPct: number): void {
-
+    private onMassUpdate = (newPct: number): void => {
+        this.view.onMassUpdate(newPct);
     }
-    private onTensionUpdate(newPct: number): void {
-
+    
+    private onTensionUpdate = (newPct: number): void => {
+        this.view.onTensionUpdate(newPct);
     }
-    private onDampingUpdate(newPct: number): void {
 
+    private onDampingUpdate = (newPct: number): void => {
+        this.view.onDampingUpdate(newPct);
     }
 
     private onResize = () => {

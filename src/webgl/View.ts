@@ -100,6 +100,17 @@ export default class PhotoView {
         this.rendering = true;
     }
 
+    public onMassUpdate(newPct: number): void {
+        this.springGen.setMass(newPct);
+    }
+
+    public onTensionUpdate(newPct: number): void {
+        this.springGen.setTension(newPct);
+    }
+    public onDampingUpdate(newPct: number): void {
+        this.springGen.setDamping(newPct);
+    }
+
     public onResize(vpW: number, vpH: number): void {
         VP.set(vpW, vpH, vpW / vpH);
         this.renderer.setSize(VP.x, VP.y);
