@@ -17,9 +17,19 @@ export default class SpringGenerator {
     private rTargetInactive: THREE.WebGLRenderTarget;
     private springScene: THREE.Scene;
     private springCam: THREE.Camera;
+
+    // Uniforms
     private uniHeightMap: THREE.IUniform;
     private uniBrushSize: THREE.IUniform;
     private uniFalloff: THREE.IUniform;
+    private uniMass: THREE.IUniform;
+    private uniTension: THREE.IUniform;
+    private uniDamping: THREE.IUniform;
+
+    // Mass ranges
+    private rangeMass: Array<number> = [1.0, 5.0];
+    private rangeTension: Array<number> = [3.0, 6.0];
+    private rangeDamping: Array<number> = [5.0, 20.0];
 
     // Dev variables
     private devMode: boolean = false;
@@ -59,7 +69,10 @@ export default class SpringGenerator {
                 mouseNow: {value: brush.getNowPos()},
                 brushSize: {value: brush.getSize()},
                 heightmap: {value: null},
-                falloffMode: {value: 0.0}
+                falloffMode: {value: 0.0},
+                sMass: {value: 1.0},
+                sTension: {value: 3.0},
+                sDamping: {value: 10.0}
             },
             defines: {
                 BOUNDS: SUBDIVS.x.toFixed(1),
@@ -73,6 +86,9 @@ export default class SpringGenerator {
         this.uniHeightMap = unis.heightmap;
         this.uniBrushSize = unis.brushSize;
         this.uniFalloff = unis.falloffMode;
+        this.uniMass = unis.sMass;
+        this.uniTension = unis.sTension;
+        this.uniDamping = unis.sDamping;
 
         const springMesh = new THREE.Mesh(springGeom, springMat);
         this.springScene.add(springMesh);
@@ -97,6 +113,19 @@ export default class SpringGenerator {
     // ******************* PUBLIC METHODS ******************* //
     public setFalloffMode(falloffIndex: number): void {
         this.uniFalloff.value = falloffIndex;
+    }
+
+    public setMass(newMass: number): void {
+        this.uniMass.value = newMass;
+    }
+
+    public setTension(newTension: number): void {
+        this.uniTension.value = newTension;
+
+    }
+
+    public setDamping(newDamping: number): void {
+        this.uniDamping.value = newDamping;
     }
 
     public update(brush: Brush): THREE.Texture {

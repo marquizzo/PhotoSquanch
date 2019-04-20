@@ -38,8 +38,7 @@ export default class PhotoView {
         this.cam = new THREE.OrthographicCamera(-1, 1, 10, -10, -10, 10);
         this.renderer = new THREE.WebGLRenderer({
             canvas: canvasElem,
-            antialias: true,
-            alpha: true,
+            antialias: false,
             stencil: false,
         });
         this.svgElem = svgElem;
