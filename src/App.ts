@@ -18,12 +18,14 @@ class App {
     // UI Elements
     private nav: HTMLElement;
     private navToggle: HTMLElement;
+
     // Brush
     private brushSizeSlider: Slider;
     private btnsFalloff: HTMLCollectionOf<HTMLElement>;
     private switchLock: HTMLElement;
 
     // Image
+    private fileReader: FileReader;
     private imgPrev: HTMLElement;
     private imgNext: HTMLElement;
     private switchWire: HTMLElement;
@@ -37,12 +39,15 @@ class App {
         const canvasBox = <HTMLCanvasElement>document.getElementById("photo-canvas");
         const svgRef: SVGElement = <any>document.getElementById("photo-svg");
 
+        const imgInput = document.getElementById("imgInput");
+        imgInput.addEventListener("change", this.imgFileSelected, false);
+        this.fileReader = new FileReader();
+
         this.view = new View(canvasBox, svgRef);
         this.photoList = shuffle(photos);
         this.imgIndex = -1;
         this.showNextImage();
         this.addEventListeners();
-
     }
     private addEventListeners(): void {
         this.nav = this.getElem("nav");
@@ -95,9 +100,10 @@ class App {
 
     // ******************* BRUSH CONTROLS ******************* //
     private onMouseWheel = (event: WheelEvent): void => {
-        // this.brushSizePct -= event.deltaY * Math.pow(10, event.deltaMode) * 0.3;
         // this.brushSizePct = Math.max(0, Math.min(100, this.brushSizePct));
         // this.updateBrushSize();
+        let delta = -event.deltaY * Math.pow(10, event.deltaMode) * 0.3;
+        this.view.changeBrushSizeBy(delta);
     }
 
     private onSizeUpdate = (newPct: number): void => {
@@ -112,7 +118,7 @@ class App {
         this.view.changeFalloff(index);
     }
 
-    private toggleLock = (event: MouseEvent): void =>{
+    private toggleLock = (event: MouseEvent): void => {
         const lockEnabled = this.switchLock.classList.contains("active");
 
         if (lockEnabled) {
@@ -122,6 +128,20 @@ class App {
             this.switchLock.classList.add("active");
             this.view.toggleLock(true);
         }
+    }
+
+    private imgFileSelected = (evt: Event):void => {
+        console.log(evt);
+        const file = (<HTMLInputElement>event.target).files[0];
+        const imgDom = document.createElement("img");
+
+        this.fileReader.onload = (loadEvt: Event) => {
+            imgDom.src = (<any>loadEvt.target).result;
+            console.log(imgDom.width, imgDom.height);
+            this.view.loadImage((<any>loadEvt.target).result);
+        }
+
+        this.fileReader.readAsDataURL(file);
     }
 
     // ******************* IMAGE CONTROLS ******************* //

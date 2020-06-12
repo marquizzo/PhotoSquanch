@@ -70,26 +70,31 @@ export default class PhotoView {
         this.update(0);
     }
 
-    // ******************* PUBLIC METHODS ******************* //
-    public changeFalloff(falloffIndex: number): void {
-        this.springGen.setFalloffMode(falloffIndex);
-    }
-
+    // ******************* NAV BRUSH ******************* //
     public changeBrushSizeTo(pct: number): void {
         this.brush.scaleTo(pct);
+    }
+
+    public changeBrushSizeBy(pctDelta: number): void {
+        this.brush.scaleBy(pctDelta);
+    }
+
+    public changeFalloff(falloffIndex: number): void {
+        this.springGen.setFalloffMode(falloffIndex);
     }
 
     public toggleLock(enable: boolean): void {
         this.brush.setLock(enable);
     }
 
-    public toggleWire(enable: boolean): void {
-        this.photo.setWireframe(enable);
-    }
-
+    // ******************* NAV IMAGE ******************* //
     public loadImage(url: string): void {
         this.photo.loadImage(url);
         this.resumeRender();
+    }
+
+    public toggleWire(enable: boolean): void {
+        this.photo.setWireframe(enable);
     }
 
     public pauseRender(): void {
@@ -100,6 +105,7 @@ export default class PhotoView {
         this.rendering = true;
     }
 
+    // ******************* NAV MATERIAL ******************* //
     public onMassUpdate(newPct: number): void {
         this.springGen.setMass(newPct);
     }

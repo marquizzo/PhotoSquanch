@@ -82,6 +82,11 @@ export default class Brush {
         this.resizeReticle();
     }
 
+    public scaleBy(pctDelta: number): void {
+        this.size = THREE.Math.clamp(this.size + pctDelta, this.sizeRange.min, this.sizeRange.max);
+        this.resizeReticle();
+    }
+
     public onResize() {
         this.halfVP.set(VP.x / 2, VP.y / 2);
         this.halfPhotoSize.set(VP.y * 0.75, VP.y).multiplyScalar(0.375);

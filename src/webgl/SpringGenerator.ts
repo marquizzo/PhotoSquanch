@@ -124,7 +124,6 @@ export default class SpringGenerator {
     }
 
     public setDamping(newDamping: number): void {
-        console.log(newDamping);
         this.uniDamping.value = (this.rangeDamping[1] - this.rangeDamping[0]) * newDamping + this.rangeDamping[0];
     }
 
