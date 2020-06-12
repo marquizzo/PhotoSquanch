@@ -5,10 +5,20 @@
 	<title>Photo Squancher</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no,shrink-to-fit=no">
-	<meta name="description" content="A fun Three-JS tool to squanch your friends faces">
+	<meta name="description" content="A fun Three-JS tool that uses spring physics to warp your friends faces">
 	<meta name="author" content="Marquizzo">
   <style type="text/css">@import url('https://fonts.googleapis.com/css?family=Rajdhani:400,600');</style>
 	<link rel="stylesheet" type="text/css" href="css/photoSquanch.css">
+
+  <!-- Twitter tags https://developer.twitter.com/en/docs/tweets/optimize-with-cards/overview/player-card -->
+  <meta name="twitter:card" content="player"/>
+  <meta name="twitter:creator" content="@marquizzo"/>
+  <meta name="twitter:title" content="Photo Squancher"/>
+  <meta name="twitter:description" content="A fun Three-JS tool that uses spring physics to warp your friends faces"/>
+  <meta name="twitter:image" content="https://dyadstudios.com/playground/squancher/thumbnail.jpg"/>
+  <meta name="twitter:player" content="https://dyadstudios.com/playground/squancher/"/>
+  <meta name="twitter:player:width" content="600"/>
+  <meta name="twitter:player:height" content="500"/>
 </head>
 <body>
 
@@ -81,6 +91,11 @@
       <div class="switch" id="switch-wire">
         <div class="switch-knob"></div>
       </div>
+    </article>
+
+    <article>
+      <h2>Custom Image</h2>
+      <input type="file" id="imgInput" name="files[]" />
     </article>
   </section>
   <section>
