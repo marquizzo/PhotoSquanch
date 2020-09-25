@@ -75,8 +75,9 @@ export default class PhotoView {
         this.brush.scaleTo(pct);
     }
 
-    public changeBrushSizeBy(pctDelta: number): void {
-        this.brush.scaleBy(pctDelta);
+    public changeBrushSizeBy(pctDelta: number): number {
+        let newPct = this.brush.scaleBy(pctDelta);
+        return newPct;
     }
 
     public changeFalloff(falloffIndex: number): void {

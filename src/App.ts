@@ -103,7 +103,8 @@ class App {
         // this.brushSizePct = Math.max(0, Math.min(100, this.brushSizePct));
         // this.updateBrushSize();
         let delta = -event.deltaY * Math.pow(10, event.deltaMode) * 0.3;
-        this.view.changeBrushSizeBy(delta);
+        let newPct = this.view.changeBrushSizeBy(delta);
+        this.brushSizeSlider.forceUpdate(newPct);
     }
 
     private onSizeUpdate = (newPct: number): void => {

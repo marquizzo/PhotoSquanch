@@ -21,13 +21,13 @@ export default class Slider {
     // ******************* EVENT LISTENERS ******************* //
     private onPointerDown = (event: MouseEvent): void => {
         this.pointerDown = true;
-        this.pct = event.clientX / 2;
+        this.pct = event.offsetX / 2;
         this.updateDOM();
     }
 
     private onPointerMove = (event: MouseEvent): void => {
         if (this.pointerDown) {
-            this.pct = event.clientX / 2;
+            this.pct = event.offsetX / 2;
             this.updateDOM();
         }
     }

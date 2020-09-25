@@ -77,14 +77,19 @@ export default class Brush {
     }
 
     // ******************* SCALING EVENTS ******************* //
+    // Scales size to a specific %
     public scaleTo(pct: number): void {
         this.size = (this.sizeRange.max - this.sizeRange.min) * pct + this.sizeRange.min;
         this.resizeReticle();
     }
 
-    public scaleBy(pctDelta: number): void {
+    // Scales size by a change in %
+    public scaleBy(pctDelta: number): number {
         this.size = THREE.Math.clamp(this.size + pctDelta, this.sizeRange.min, this.sizeRange.max);
         this.resizeReticle();
+
+        // Returns new percentage
+        return THREE.Math.mapLinear(this.size, this.sizeRange.min, this.sizeRange.max, 0, 100);
     }
 
     public onResize() {
