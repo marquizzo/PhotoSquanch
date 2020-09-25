@@ -11,18 +11,21 @@ varying vec3 viewPos;
 varying float vMix;
 
 void main() {
-    // Calculate normals
-    /* vec3 camPos = vec3(0, 0, 5);
-    vec3 xTangent = dFdx( viewPos );
-    vec3 yTangent = dFdy( viewPos );
-    vec3 faceNormal = normalize( cross( xTangent, yTangent ) );
-    vec3 lightVector = normalize(camPos - faceNormal);
-    float flatShading = dot(faceNormal, lightVector); */
-    float flatShading = 1.0;
+    #ifdef FLAT_SHADING
+        // Calculate normals
+        vec3 camPos = vec3(0, 0, 5);
+        vec3 xTangent = dFdx( viewPos );
+        vec3 yTangent = dFdy( viewPos );
+        vec3 faceNormal = normalize( cross( xTangent, yTangent ) );
+        vec3 lightVector = normalize(camPos - faceNormal);
+        float flatShading = dot(faceNormal, lightVector);
+    #else
+        float flatShading = 1.0;
+    #endif
 
     // Fake anti-alias
-    float fauxAA = smoothstep(0.5, 0.49, abs(vUV.x - 0.5));
-    fauxAA *= smoothstep(0.5, 0.495, abs(vUV.y - 0.5));
+    float fauxAA = smoothstep(0.5, 0.495, abs(vUV.x - 0.5));
+    fauxAA *= smoothstep(0.5, 0.498, abs(vUV.y - 0.5));
 
     // Texture mixing
     vec4 texture0 = texture2D(map0, vUV);

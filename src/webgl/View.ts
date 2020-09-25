@@ -25,7 +25,7 @@ export default class PhotoView {
     private renderer: THREE.WebGLRenderer;
     private springTex: THREE.Texture;
 
-    constructor(canvasElem: HTMLCanvasElement, svgElem: SVGElement) {
+    constructor(canvasBox: HTMLElement, svgElem: SVGElement) {
         // General props
         this.rendering = false;
         this.fpsCap = false;
@@ -37,10 +37,10 @@ export default class PhotoView {
         this.scene = new THREE.Scene();
         this.cam = new THREE.OrthographicCamera(-1, 1, 10, -10, -10, 10);
         this.renderer = new THREE.WebGLRenderer({
-            canvas: canvasElem,
             antialias: false,
             stencil: false,
         });
+        canvasBox.appendChild(this.renderer.domElement);
         this.svgElem = svgElem;
 
         // Main classes
@@ -55,18 +55,17 @@ export default class PhotoView {
         this.scene.add(this.photo.getMesh());
 
         // Start drag
-        canvasElem.addEventListener("mousedown", this.onMouseDown);
-        canvasElem.addEventListener("touchstart", this.onMouseDown);
+        canvasBox.addEventListener("mousedown", this.onMouseDown);
+        canvasBox.addEventListener("touchstart", this.onMouseDown);
         // Drag move
-        canvasElem.addEventListener("mousemove", this.onMouseMove);
-        canvasElem.addEventListener("touchmove", this.onMouseMove);
+        canvasBox.addEventListener("mousemove", this.onMouseMove);
+        canvasBox.addEventListener("touchmove", this.onMouseMove);
         // Stop drag
-        canvasElem.addEventListener("mouseup", this.onMouseUp);
-        canvasElem.addEventListener("touchend", this.onMouseUp);
-        canvasElem.addEventListener("mouseout", this.onMouseOut);
+        canvasBox.addEventListener("mouseup", this.onMouseUp);
+        canvasBox.addEventListener("touchend", this.onMouseUp);
+        canvasBox.addEventListener("mouseout", this.onMouseOut);
 
         // Fire up rendering loop
-        this.onResize(window.innerWidth, window.innerHeight);
         this.update(0);
     }
 
@@ -132,7 +131,7 @@ export default class PhotoView {
 
     // ******************* MOUSE EVENT LISTENERS ******************* //
     private onMouseDown = (event): void => {
-        // this.renderer.domElement.style.cursor = "grabbing";
+        this.renderer.domElement.style.cursor = "grabbing";
         this.autoBrush = false;
         this.brush.pressDown(event.layerX, event.layerY);
         event.preventDefault();
@@ -146,7 +145,7 @@ export default class PhotoView {
     }
 
     private onMouseUp = (event): void => {
-        // this.renderer.domElement.style.cursor = "grab";
+        this.renderer.domElement.style.cursor = "grab";
         this.brush.release();
         event.preventDefault();
     }

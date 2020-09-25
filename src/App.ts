@@ -16,6 +16,7 @@ class App {
     private imgIndex: number;
 
     // UI Elements
+    private canvasBox: HTMLElement;
     private nav: HTMLElement;
     private navToggle: HTMLElement;
 
@@ -29,6 +30,7 @@ class App {
     private imgPrev: HTMLElement;
     private imgNext: HTMLElement;
     private switchWire: HTMLElement;
+    // private switchShading: HTMLElement;
 
     // Material
     private sliderMass: Slider;
@@ -36,19 +38,21 @@ class App {
     private sliderDamping: Slider;
 
     constructor() {
-        const canvasBox = <HTMLCanvasElement>document.getElementById("photo-canvas");
+        this.canvasBox = document.getElementById("canvas-box");
         const svgRef: SVGElement = <any>document.getElementById("photo-svg");
 
         const imgInput = document.getElementById("imgInput");
         imgInput.addEventListener("change", this.imgFileSelected, false);
         this.fileReader = new FileReader();
 
-        this.view = new View(canvasBox, svgRef);
+        this.view = new View(this.canvasBox, svgRef);
         this.photoList = shuffle(photos);
         this.imgIndex = -1;
         this.showNextImage();
         this.addEventListeners();
+        this.onResize();
     }
+
     private addEventListeners(): void {
         this.nav = this.getElem("nav");
         this.navToggle = this.getElem("nav-toggle");
@@ -189,7 +193,9 @@ class App {
     }
 
     private onResize = () => {
-        this.view.onResize(window.innerWidth, window.innerHeight);
+        let w = this.canvasBox.offsetWidth;
+        let h = this.canvasBox.offsetHeight;
+        this.view.onResize(w, h);
     }
 }
 

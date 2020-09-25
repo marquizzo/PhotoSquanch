@@ -16,6 +16,11 @@ export function normalize(val: number, max: number, min: number): number {
     return (val - min) / (max - min);
 }
 
+// Maps range from [oldMin, oldMax] to [newMin, newMax]
+export function map( val: number, oldMin: number, oldMax: number, newMin: number, newMax: number ) {
+    return newMin + ( val - oldMin ) * ( newMax - newMin ) / ( oldMax - oldMin );
+}
+
 // Javascript mod fix
 export function mod(n: number, m: number): number {
     return (n % m + m) % m;

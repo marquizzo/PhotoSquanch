@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { normalize } from "../utils/";
+import { normalize, map } from "../utils/";
 import { VP, SUBDIVS } from "../utils/regionalVars";
 
 export default class Brush {
@@ -94,7 +94,7 @@ export default class Brush {
 
     public onResize() {
         this.halfVP.set(VP.x / 2, VP.y / 2);
-        this.halfPhotoSize.set(VP.y * 0.75, VP.y).multiplyScalar(0.375);
+        this.halfPhotoSize.set(VP.y * 0.75, VP.y).multiplyScalar(0.5);
         this.resizeReticle();
     }
 

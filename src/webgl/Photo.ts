@@ -20,13 +20,16 @@ export default class Photo {
     constructor() {
         this.texAlternation = 0;
 
-        const geom = new THREE.PlaneBufferGeometry(11.25, 15, SUBDIVS.x, SUBDIVS.y);
+        const geom = new THREE.PlaneBufferGeometry(15, 20, SUBDIVS.x, SUBDIVS.y);
         this.mat = new THREE.RawShaderMaterial({
             uniforms: {
                 map0: { value: null },
                 map1: { value: null },
                 heightmap: {value: null},
                 transition: {value: 0},
+            },
+            defines: {
+                // FLAT_SHADING: true // Save for later
             },
             vertexShader: vShader,
             fragmentShader: fShader,
@@ -53,6 +56,11 @@ export default class Photo {
         this.mat.wireframe = value;
     }
 
+    public setShading(value: boolean): void {
+        let matDefines = this.mat.defines;
+        value ? matDefines.FLAT_SHADING = "" : delete matDefines.FLAT_SHADING;
+    }
+
     // Get image and create texture
     public loadImage(url: string): void {
         this.textureLoader.load(url, this.imageLoaded.bind(this));
@@ -77,4 +85,3 @@ export default class Photo {
         this.uniHeight.value = heightMap;
     }
 }
-

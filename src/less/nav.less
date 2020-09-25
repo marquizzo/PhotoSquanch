@@ -8,11 +8,14 @@
 @color-white2:  #ededed;
 @color-blue:    #3c7fca;
 
+@nav-width: 220px;
+@mobile-breakpoint: 800px;
+
 nav {
     position: absolute;
     top: 0;
     right: 0;
-    width: 220px;
+    width: @nav-width;
     height: 100%;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
@@ -77,7 +80,7 @@ p {
     }
 }
 
-@media (max-width: 800px){
+@media (max-width: @mobile-breakpoint){
     nav {
         transform: translateX(100%);
         &.active {
