@@ -12,6 +12,7 @@ export default class Brush {
     private startPos: THREE.Vector2;
 
     // Constant attributes
+    private photoRatio: number = 0.75;
     private reticle: SVGCircleElement;
     private halfPhotoSize: THREE.Vector2;
     private halfVP: THREE.Vector2;
@@ -22,7 +23,7 @@ export default class Brush {
         this.nowPos = new THREE.Vector2(-1, -1);
 
         this.reticle = <SVGCircleElement>svgElem.children[0];
-        this.halfPhotoSize = new THREE.Vector2(VP.y * 0.75, VP.y).multiplyScalar(0.375);
+        this.halfPhotoSize = new THREE.Vector2(VP.y * this.photoRatio, VP.y).multiplyScalar(0.5);
         this.halfVP = new THREE.Vector2(VP.x / 2, VP.y / 2);
         this.sizeRange = {min: 5, max: SUBDIVS.y / 2.0};
     }
@@ -40,7 +41,7 @@ export default class Brush {
     }
 
     private resizeReticle(): void {
-        let pxRadius = this.size * this.halfPhotoSize.y / this.sizeRange.max;
+        let pxRadius = this.size * (VP.y / 2) / this.sizeRange.max;
         this.reticle.setAttribute("r", pxRadius.toString());
     }
 
@@ -94,7 +95,7 @@ export default class Brush {
 
     public onResize() {
         this.halfVP.set(VP.x / 2, VP.y / 2);
-        this.halfPhotoSize.set(VP.y * 0.75, VP.y).multiplyScalar(0.5);
+        this.halfPhotoSize.set(VP.y * this.photoRatio, VP.y).multiplyScalar(0.5);
         this.resizeReticle();
     }
 
@@ -116,6 +117,12 @@ export default class Brush {
         if (!this.locked) {
             this.release();
         }
+    }
+
+    public setPhotoWHRatio(ratio: number): void {
+        console.log('new ratio: ', ratio);
+        this.photoRatio = ratio;
+        this.halfPhotoSize.x = (VP.y * this.photoRatio) * 0.5;
     }
 
     // ******************* AUTOBRUSH ******************* //

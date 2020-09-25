@@ -142,8 +142,10 @@ class App {
 
         this.fileReader.onload = (loadEvt: Event) => {
             imgDom.src = (<any>loadEvt.target).result;
-            console.log(imgDom.width, imgDom.height);
-            this.view.loadImage((<any>loadEvt.target).result);
+            imgDom.onload = () => {
+                let ratio = imgDom.width / imgDom.height;
+                this.loadImage((<any>loadEvt.target).result, ratio);
+            }
         }
 
         this.fileReader.readAsDataURL(file);
@@ -151,8 +153,8 @@ class App {
 
     // ******************* IMAGE CONTROLS ******************* //
     // Loads image in URL
-    private loadImage(url: string): void {
-        this.view.loadImage(url);
+    private loadImage(url: string, whRatio: number = 0.75): void {
+        this.view.loadImage(url, whRatio);
     }
 
     // Goes to previous image

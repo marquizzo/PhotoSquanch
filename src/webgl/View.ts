@@ -88,8 +88,10 @@ export default class PhotoView {
     }
 
     // ******************* NAV IMAGE ******************* //
-    public loadImage(url: string): void {
+    public loadImage(url: string, whRatio: number): void {
         this.photo.loadImage(url);
+        this.photo.setWHRatio(whRatio);
+        this.brush.setPhotoWHRatio(whRatio);
         this.resumeRender();
     }
 
@@ -127,6 +129,10 @@ export default class PhotoView {
 
         this.photoSize.set(VP.y * 0.75, VP.y).multiplyScalar(this.photoScale);
         this.brush.onResize();
+
+        // Force render, prevents flicker
+        this.renderer.setRenderTarget(null);
+        this.renderer.render(this.scene, this.cam);
     }
 
     // ******************* MOUSE EVENT LISTENERS ******************* //

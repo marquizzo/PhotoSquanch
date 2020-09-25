@@ -20,7 +20,7 @@ export default class Photo {
     constructor() {
         this.texAlternation = 0;
 
-        const geom = new THREE.PlaneBufferGeometry(15, 20, SUBDIVS.x, SUBDIVS.y);
+        const geom = new THREE.PlaneBufferGeometry(20, 20, SUBDIVS.x, SUBDIVS.y);
         this.mat = new THREE.RawShaderMaterial({
             uniforms: {
                 map0: { value: null },
@@ -37,6 +37,7 @@ export default class Photo {
             side: THREE.DoubleSide,
         });
         this.mesh = new THREE.Mesh(geom, this.mat);
+        this.mesh.scale.set(0.75, 1, 1);
 
         // Uniform shortcuts
         this.uniMap0 = this.mat.uniforms.map0;
@@ -64,6 +65,10 @@ export default class Photo {
     // Get image and create texture
     public loadImage(url: string): void {
         this.textureLoader.load(url, this.imageLoaded.bind(this));
+    }
+
+    public setWHRatio(ratio: number): void {
+        this.mesh.scale.x = ratio;
     }
 
     // Image texture is ready
