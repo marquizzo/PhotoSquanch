@@ -6,7 +6,7 @@
   "description": "A fun WebGL tool to squanch your friends faces",
   "dependencies": {
     "less": "^3.9.0",
-    "three": "^0.102.1",
+    "three": "^0.125.0",
     "typescript": "^4.0.3",
     "webpack": "^4.44.2"
   },
